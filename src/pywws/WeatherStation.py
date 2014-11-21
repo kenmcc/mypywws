@@ -84,6 +84,7 @@ import sys
 import time
 
 from . import Localisation
+'''
 USBDevice = None
 if not USBDevice:
     try:
@@ -107,6 +108,7 @@ if not USBDevice:
         pass
 if not USBDevice:
     raise ImportError('No USB library found')
+'''    
 
 def decode_status(status):
     result = {}
@@ -166,6 +168,7 @@ def _bcd_decode(byte):
     return (hi * 10) + lo
 
 def _date_time(raw, offset):
+    print len(raw), offset
     year = _bcd_decode(raw[offset])
     month = _bcd_decode(raw[offset+1])
     day = _bcd_decode(raw[offset+2])
@@ -231,6 +234,25 @@ def _decode(raw, format):
         elif scale and result:
             result = float(result) * scale
     return result
+    
+class SqlDrive(object):
+    def __init__(self):
+        self.logger = logging.getLogger('pywws.WeatherStation.SqlDrive')
+        self.logger.info('using %s', "sqlite3")
+        
+    def read_block(self, address):
+        print "readblock ", address
+        blocks = {"0": [0x55, 0xAA,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+                  "32":range(32),
+                  "64":range(32),
+                  "96":range(32),
+                  "128":range(32),
+                  "160":range(32),
+                  "192":range(32),
+                  "224":range(32)}
+                  
+        return blocks[str(address)]
+
 
 class CUSBDrive(object):
     """Low level interface to weather station via USB.
@@ -402,7 +424,7 @@ class weather_station(object):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
-        self.cusb = CUSBDrive()
+        self.cusb = SqlDrive()
         # init variables
         self.status = status
         self.avoid = max(avoid, 0.0)
@@ -617,9 +639,11 @@ class weather_station(object):
         if unbuffered or not self._fixed_block:
             self._fixed_block = self._read_fixed_block()
         format = self.fixed_format
+        print self.fixed_format
         # navigate down list of keys to get to wanted data
         for key in keys:
             format = format[key]
+            print key, format
         return _decode(self._fixed_block, format)
 
     def _wait_for_station(self):

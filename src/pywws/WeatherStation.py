@@ -239,10 +239,8 @@ class SqlDrive(object):
     def __init__(self):
         self.logger = logging.getLogger('pywws.WeatherStation.SqlDrive')
         self.logger.info('using %s', "sqlite3")
-        
-    def read_block(self, address):
-        print "readblock ", address
-        blocks = {"0": [0x55, 0xAA,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+        #                         0     1     2  3  4  5  6  7  8  9  A  B  C  D  E  F  10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F      
+        self.blocks = {"0":      [0x55, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1],
                   "32":range(32),
                   "64":range(32),
                   "96":range(32),
@@ -250,9 +248,20 @@ class SqlDrive(object):
                   "160":range(32),
                   "192":range(32),
                   "224":range(32)}
-                  
-        return blocks[str(address)]
-
+        self.blockdata = [1, 95, 0, 0x30, 99, 0, 0x20, 0, 0x60, 50, 80, 80, 3, 0, 20, 0,1, 95, 0, 0x30, 99, 0, 0x20, 0, 0x60, 50, 80, 80, 3, 0, 20, 0]          
+        self.read_count = 0
+    def read_block(self, address):
+        print "readblock ", address
+        if address <= 224:           
+            return self.blocks[str(address)]
+        else:
+            val = address - 256
+            print "real val =", val
+            if self.read_count % 2 == 0:
+               self.blocks["0"] = [0x55, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1]
+               self.blockdata[1] -= 1
+            self.read_count += 1
+            return self.blockdata
 
 class CUSBDrive(object):
     """Low level interface to weather station via USB.

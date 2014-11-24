@@ -87,11 +87,13 @@ class DataLogger(object):
         self.raw_data = raw_data
         # connect to weather station
         ws_type = self.params.get('fixed', 'ws type')
+        print "SETTING WS_TYPE = ", ws_type
         if ws_type:
             self.params.unset('fixed', 'ws type')
             self.params.set('config', 'ws type', ws_type)
         ws_type = self.params.get('config', 'ws type', 'Unknown')
         avoid = eval(self.params.get('config', 'usb activity margin', '3.0'))
+        print "AND NOW TYPE = ", ws_type
         self.ws = weather_station(
             ws_type=ws_type, status=self.status, avoid=avoid)
         # check for valid weather station type
@@ -132,6 +134,8 @@ class DataLogger(object):
         self.status.set('fixed', 'fixed block', str(fixed_block))
         # check ws type
         if (fixed_block['lux_wm2_coeff'] == 0.0) != (self.ws.ws_type == '1080'):
+            print fixed_block['lux_wm2_coeff'], (fixed_block['lux_wm2_coeff'] == 0.0) 
+            print self.ws.ws_type, (self.ws.ws_type == '1080')
             self.logger.warning('weather station type appears to be incorrect')
         return fixed_block
 
@@ -141,11 +145,13 @@ class DataLogger(object):
         last_stored = self.raw_data.before(datetime.max)
         if not last_stored:
             last_stored = datetime.min
+            print "HAVE LAST_STORED", last_stored
         if self.status.get('data', 'ptr'):
             saved_ptr, saved_date = self.status.get('data', 'ptr').split(',')
             saved_ptr = int(saved_ptr, 16)
             saved_date = DataStore.safestrptime(saved_date)
             saved_date = self.raw_data.nearest(saved_date)
+            print "HAVE SAVED_DATE = ", saved_date
             while saved_date < last_stored:
                 saved_date = self.raw_data.after(saved_date + SECOND)
                 saved_ptr = self.ws.inc_ptr(saved_ptr)

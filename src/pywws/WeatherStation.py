@@ -78,7 +78,7 @@ from __future__ import absolute_import
 
 __docformat__ = "restructuredtext en"
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import sys
 import time
@@ -168,7 +168,6 @@ def _bcd_decode(byte):
     return (hi * 10) + lo
 
 def _date_time(raw, offset):
-    print len(raw), offset
     year = _bcd_decode(raw[offset])
     month = _bcd_decode(raw[offset+1])
     day = _bcd_decode(raw[offset+2])
@@ -237,11 +236,18 @@ def _decode(raw, format):
     
 class SqlDrive(object):
     def __init__(self):
+        rightnow = datetime.now()
+        h = rightnow.time().hour
+        m = rightnow.time().minute
+        s = rightnow.time().second
+        M = rightnow.date().month
+        D = rightnow.date().day
+        
         self.logger = logging.getLogger('pywws.WeatherStation.SqlDrive')
         self.logger.info('using %s', "sqlite3")
         #                         0     1     2  3  4  5  6  7  8  9  A  B  C  D  E  F  10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F      
-        self.blocks = {"0":      [0x55, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1],
-                  "32":range(32),
+        self.blocks = {"0":      [0x55, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1],
+                       "32":     [0000, 0000, 0, 0, 0, 0, 0, 0, 0, 0,14, M, D, h, m, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                   "64":range(32),
                   "96":range(32),
                   "128":range(32),
@@ -250,16 +256,39 @@ class SqlDrive(object):
                   "224":range(32)}
         self.blockdata = [1, 95, 0, 0x30, 99, 0, 0x20, 0, 0x60, 50, 80, 80, 3, 0, 20, 0,1, 95, 0, 0x30, 99, 0, 0x20, 0, 0x60, 50, 80, 80, 3, 0, 20, 0]          
         self.read_count = 0
+        self.read_time = rightnow
+        try:
+            self.fifo = os.mkfifo("/tmp/weather.fifo")
+        except:
+            pass
+        self.fifofile = open("/tmp/weather.fifo", "r")
     def read_block(self, address):
+        rightnow = datetime.now()
+        h = rightnow.time().hour
+        m = rightnow.time().minute
+        s = rightnow.time().second
+        M = rightnow.date().month
+        D = rightnow.date().day
+        self.blocks["32"] = [0000, 0000, 0, 0, 0, 0, 0, 0, 0, 0,14, M, D, h, m, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         print "readblock ", address
         if address <= 224:           
             return self.blocks[str(address)]
         else:
+            data = self.fifofile.readline()
+            print data
+
             val = address - 256
-            print "real val =", val
-            if self.read_count % 2 == 0:
-               self.blocks["0"] = [0x55, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1]
+            #print "real val =", val
+            if rightnow >= self.read_time + timedelta(seconds=48):
+            #if self.read_count % 16 == 0:
+               #self.blocks["0"] = [0x55, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1]
+               #self.blocks["0"][0x1B] += 2
+               self.blocks["0"][0x1E] += 16
+               if self.blocks["0"][0x1E] >= 256:
+                   self.blocks["0"][0x1E] = 0
+                   self.blocks["0"][0x1F] += 1
                self.blockdata[1] -= 1
+               self.read_time = rightnow
             self.read_count += 1
             return self.blockdata
 
@@ -397,7 +426,7 @@ class DriftingClock(object):
             diff = (now - self.clock) % self._real_period
             if diff < 2.0 or diff > self._real_period - 2.0:
                 return
-            self.logger.error('unexpected %s clock change', self.name)
+                self.logger.error('unexpected %s clock change: ', self.name, "{0} vs {1}".format(self.clock, self._real_period))
         self.clock = now
         self.logger.warning('setting %s clock %g', self.name, now % self.period)
         if self.status:
@@ -512,6 +541,12 @@ class weather_station(object):
                     'hum_in', 'temp_in', 'hum_out', 'temp_out',
                     'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
                     'rain', 'status')):
+                for key in (
+                    'hum_in', 'temp_in', 'hum_out', 'temp_out',
+                    'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
+                    'rain', 'status'):
+                  if new_data[key] != old_data[key]:
+                    print key, "has changed", new_data[key], old_data[key]
                 self.logger.debug('live_data new data')
                 if data_time - last_data_time < self.margin:
                     # data has just changed, so definitely at a 48s update time
@@ -648,7 +683,6 @@ class weather_station(object):
         if unbuffered or not self._fixed_block:
             self._fixed_block = self._read_fixed_block()
         format = self.fixed_format
-        print self.fixed_format
         # navigate down list of keys to get to wanted data
         for key in keys:
             format = format[key]

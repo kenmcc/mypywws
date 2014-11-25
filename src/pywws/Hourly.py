@@ -52,7 +52,7 @@ import sys
 
 from . import DataStore
 from . import Localisation
-from .LogData import DataLogger
+#from .LogData import DataLogger
 from .Logger import ApplicationLogger
 from . import Process
 from . import Tasks
@@ -70,7 +70,7 @@ def Hourly(data_dir):
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
     # get weather station data
-    DataLogger(params, status, raw_data).log_data()
+    #DataLogger(params, status, raw_data).log_data() #no need to do this if the tempreader is logging it
     # do the processing
     Process.Process(params,
                     raw_data, calib_data, hourly_data, daily_data, monthly_data)

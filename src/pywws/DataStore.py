@@ -497,6 +497,9 @@ class core_store(object):
         lo = min(target_date, date.max - DAY)
         hi = lo + DAY
         return path, lo, hi
+        
+    def last_entry(self):
+        return self[self.before(datetime.max)]
 
 class data_store(core_store):
     """Stores raw weather station data."""
@@ -506,7 +509,7 @@ class data_store(core_store):
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
-        'status', 'illuminance', 'uv',
+        'status', 'illuminance', 'uv', "bedroom_temp", "kitchen_temp"
         ]
     conv = {
         'idx'          : safestrptime,
@@ -523,6 +526,8 @@ class data_store(core_store):
         'status'       : int,
         'illuminance'  : float,
         'uv'           : int,
+        'bedroom_temp' : float,
+        'kitchen_temp' : float,
         }
 
 class calib_store(core_store):

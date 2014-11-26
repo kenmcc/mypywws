@@ -12,17 +12,15 @@ def makefile(datestamp, datadir):
     except:
         return None
     parts = d.split("-")
-    path = datadir+"/raw/"+parts[0]
-    if not os.path.exists(path):
-        os.mkdir(path)
+    path = ""
+    for bits in [datadir, "raw", parts[0], parts[0]+"-"+parts[1]]:
+        path = os.path.join(path, bits)
+        if not os.path.exists(path):
+            print "Need to make ", path
+            os.mkdir(path)
+    return os.path.join(path, d+".txt")
     
-    path += "/"+parts[0]+"-"+parts[1]
-    if not os.path.exists(path):
-        os.mkdir(path)
-        
-    path += "/"+d+".txt"
-    return path
-
+    
 class dataminder:
     idx = lastIndex
     delay   = 1
@@ -94,8 +92,8 @@ def doMain(database, datadir):
             if t < 40 and t > -10:
                 D.temp_bedroom =t
        
-        a = str(D)
         if D.idx is not 0:
+            a = str(D)
             filen = makefile(D.idx, datadir)
             with open(filen, "a") as f:
                 f.write(a+"\n")

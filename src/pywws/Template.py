@@ -335,7 +335,7 @@ class Template(object):
         rain_hour = self._rain_hour
         rain_day = self._rain_day
         pressure_offset = eval(self.params.get('config', 'pressure offset'))
-        fixed_block = eval(self.status.get('fixed', 'fixed block'))
+        #fixed_block = eval(self.status.get('fixed', 'fixed block'))
         # start off with no time rounding
         round_time = None
         # start off in hourly data mode

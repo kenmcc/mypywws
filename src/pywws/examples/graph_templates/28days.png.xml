@@ -25,23 +25,49 @@
   <dateformat></dateformat>
   <plot>
     <title>Temperature (°C)</title>
-    <yrange>-10, 45</yrange>
+    <!--<yrange>-10, 45</yrange>-->
     <source>daily</source>
-    <boxwidth>boxwidth / 2</boxwidth>
+    <boxwidth>boxwidth / 4</boxwidth>
     <subplot>
       <style>box</style>
       <colour>1</colour>
-      <title>Daytime max</title>
-      <xcalc>data['start'] + timedelta(hours=18)</xcalc>
+      <title>Out Range</title>
+      <xcalc>data['start']</xcalc>
       <ycalc>data['temp_out_max']</ycalc>
     </subplot>
     <subplot>
       <style>box</style>
-      <colour>3</colour>
-      <title>Nighttime min</title>
-      <xcalc>data['start'] + timedelta(hours=6)</xcalc>
+      <colour>rgb "#ffffff"</colour>
+      <xcalc>data['start']</xcalc>
       <ycalc>data['temp_out_min']</ycalc>
     </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>2</colour>
+      <title>Bedroom Range</title>
+      <xcalc>data['start']+ timedelta(hours=6)</xcalc>
+      <ycalc>data['temp_bedroom_max']</ycalc>
+    </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>rgb "#ffffff"</colour>
+      <xcalc>data['start']+ timedelta(hours=6)</xcalc>
+      <ycalc>data['temp_bedroom_min']</ycalc>
+    </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>3</colour>
+      <title>Kitchen Range</title>
+      <xcalc>data['start']+ timedelta(hours=12)</xcalc>
+      <ycalc>data['temp_kitchen_max']</ycalc>
+    </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>rgb "#ffffff"</colour>
+      <xcalc>data['start']+ timedelta(hours=12)</xcalc>
+      <ycalc>data['temp_kitchen_min']</ycalc>
+    </subplot>
+    
   </plot>
   <plot>
     <title>Wind speed (mph)</title>

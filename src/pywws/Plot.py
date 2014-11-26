@@ -834,22 +834,27 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         colour = 0
         for subplot_no in range(subplot_count):
             subplot = subplots[subplot_no]
-            colour = eval(subplot.subplot.get_value('colour', str(colour+1)))
-            style = subplot.subplot.get_value(
-                'style', 'smooth unique lc %d lw 1' % (colour))
+            try:
+                colour = eval(subplot.subplot.get_value('colour', str(colour+1)))
+                style = subplot.subplot.get_value(
+                    'style', 'smooth unique lc %d lw 1' % (colour))
+            except:
+                colour = subplot.subplot.get_value('colour', colour)
+                style = subplot.subplot.get_value(
+                    'style', 'smooth unique lc %s lw 1' % (colour))
             words = style.split()
             if len(words) > 1 and words[0] in ('+', 'x', 'line'):
                 width = int(words[1])
             else:
                 width = 1
             if style == 'box':
-                style = 'lc %d lw 0 with boxes' % (colour)
+                style = 'lc {0} lw 0 with boxes'.format(colour)
             elif words[0] == '+':
-                style = 'lc %d lw %d pt 1 with points' % (colour, width)
+                style = 'lc {0} lw {1} pt 1 with points'.format(colour, width)
             elif words[0] == 'x':
-                style = 'lc %d lw %d pt 2 with points' % (colour, width)
+                style = 'lc {0} lw {1} pt 2 with points'.format(colour, width)
             elif words[0] == 'line':
-                style = 'smooth unique lc %d lw %d' % (colour, width)
+                style = 'smooth unique lc {0} lw {1}'.format(colour, width)
             axes = subplot.subplot.get_value('axes', 'x1y1')
             title = subplot.subplot.get_value('title', '')
             result += ' "%s" using 1:($2) axes %s title "%s" %s' % (

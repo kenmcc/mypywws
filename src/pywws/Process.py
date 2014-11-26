@@ -321,7 +321,7 @@ class DayAcc(object):
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
-        for i in ('temp_in', 'temp_out'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
             temp = data[i]
             if temp is not None:
                 self.ave[i].add(temp)
@@ -397,7 +397,7 @@ class MonthAcc(object):
         self.reset()
 
     def reset(self):
-        for i in ('temp_in', 'temp_out'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
             self.ave[i] = Average()
             self.min_lo[i] = Minimum()
             self.min_hi[i] = Maximum()
@@ -422,7 +422,7 @@ class MonthAcc(object):
 
     def add_daily(self, data):
         self.idx = data['idx']
-        for i in ('temp_in', 'temp_out'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
             temp = data['%s_ave' % i]
             if temp is not None:
                 self.ave[i].add(temp)
@@ -473,7 +473,7 @@ class MonthAcc(object):
         result['idx'] = self.idx
         result['rain'] = self.rain
         result['rain_days'] = self.rain_days
-        for i in ('temp_in', 'temp_out'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
             result['%s_ave' % i] = self.ave[i].result()
             result['%s_min_ave' % i] = self.min_ave[i].result()
             (result['%s_min_lo' % i],
@@ -485,6 +485,7 @@ class MonthAcc(object):
              result['%s_max_lo_t' % i]) = self.max_lo[i].result()
             (result['%s_max_hi' % i],
              result['%s_max_hi_t' % i]) = self.max_hi[i].result()
+             
         for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
             result['%s_ave' % i] = self.ave[i].result()
             (result['%s_max' % i],

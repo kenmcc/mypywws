@@ -24,15 +24,26 @@
   <xformat>%a %d</xformat>
   <dateformat></dateformat>
   <plot>
-    <yrange>-10, 35</yrange>
+    <!--<yrange>-10, 35</yrange>-->
     <source>hourly</source>
     <subplot>
       <colour>1</colour>
-      <title>Temperature (°C)</title>
+      <title>Outside (°C)</title>
       <ycalc>data['temp_out']</ycalc>
     </subplot>
     <subplot>
+      <colour>2</colour>
+      <title>Bedroom (°C)</title>
+      <ycalc>data['temp_bedroom']</ycalc>
+    </subplot>
+    <subplot>
       <colour>3</colour>
+      <title>Kitchen (°C)</title>
+      <ycalc>data['temp_kitchen']</ycalc>
+    </subplot>
+
+    <subplot>
+      <colour>4</colour>
       <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
       <title>Dew point (°C)</title>
     </subplot>

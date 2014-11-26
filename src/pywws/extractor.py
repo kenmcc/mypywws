@@ -1,10 +1,19 @@
 import sqlite3
 import os
+from DataStore import *
 
-conn = sqlite3.connect("../../weatherparser/weather.db", detect_types=sqlite3.PARSE_COLNAMES|sqlite3.PARSE_DECLTYPES)
+conn = sqlite3.connect("weather.db", detect_types=sqlite3.PARSE_COLNAMES|sqlite3.PARSE_DECLTYPES)
 c = conn.cursor()
 
-allData = c.execute("SELECT * FROM data where node < 10 order by date asc").fetchall()
+raw_data = data_store("weatherdb")
+lastData = raw_data.last_entry()
+datesearch = ""
+lastIndex = 0
+if lastData is not None:
+    lastIndex = lastData["idx"]
+    datesearch = "where date > '{0}'".format(lastIndex)
+    
+allData = c.execute("SELECT * FROM data {0} order by date asc".format(datesearch)).fetchall()
 
 
 def makefile(datestamp):
@@ -12,50 +21,43 @@ def makefile(datestamp):
     try:
         d = datestamp.split(" ")[0]
     except:
-        print datestamp
+        return None
     parts = d.split("-")
     if not os.path.exists("weatherdb/raw/"+parts[0]):
         os.mkdir("weatherdb/raw/"+parts[0])
-        print "making year"
+        
     if not os.path.exists("weatherdb/raw/"+parts[0]+"/"+parts[0]+"-"+parts[1]):
         os.mkdir("weatherdb/raw/"+parts[0]+"/"+parts[0]+"-"+parts[1])
-        print "making year-month"
+        
     return "weatherdb/raw/"+parts[0]+"/"+parts[0]+"-"+parts[1]+"/"+d+".txt"
 
 class dataminder:
-    idx = 0  
+    idx = lastIndex
     delay   = 1
-    hum_in = 0
-    temp_in = 0
-    hum_out = 0
-    temp_out = 0
-    abs_pressure = 0
-    wind_ave = 0
-    wind_gust = 0
-    wind_dir = 0
-    rain = 0
-    status = 0
-    illuminance= 0
-    uv = 0
+    hum_in = 0 if lastIndex == 0 else lastData["hum_in"]
+    temp_in =  0 if lastIndex == 0 else lastData["temp_in"]
+    hum_out =  0 if lastIndex == 0 else lastData["hum_out"]
+    temp_out =  0 if lastIndex == 0 else lastData["temp_out"]
+    abs_pressure =  0 if lastIndex == 0 else lastData["abs_pressure"]
+    wind_ave =  0 if lastIndex == 0 else lastData["wind_ave"]
+    wind_gust =  0 if lastIndex == 0 else lastData["wind_gust"]
+    wind_dir =  0 if lastIndex == 0 else lastData["wind_dir"]
+    rain =  0 if lastIndex == 0 else lastData["rain"]
+    status =  0 if lastIndex == 0 else lastData["status"]
+    illuminance=  0 if lastIndex == 0 else lastData["illuminance"]
+    uv = 0 if lastIndex == 0 else lastData["uv"]
+    temp_bedroom =  12.3
+    temp_kitchen=  23.4
     
     def __str__(self):
         fields = [self.idx,self.delay,self.hum_in,self.temp_in,self.hum_out,
                   self.temp_out,self.abs_pressure,self.wind_ave,self.wind_gust,self.wind_dir,
-                self.rain,self.status,self.illuminance,self.uv] 
+                self.rain,self.status,self.illuminance,self.uv, self.temp_bedroom, self.temp_kitchen] 
         return ",".join(str(f) for f in fields)
-    
-    
     
 D = dataminder()   
 
-temp_out = 0
-temp_in = 0
-humidity=0
-pressure = 0
-rain = 0
-wind_dir = 0
-wind_avg = 0
-wind_gust =0
+
 for row in allData:
     D.idx = row[0]
     node = row[1]
@@ -72,11 +74,24 @@ for row in allData:
             
     elif node == 3:
         D.rain += row[6]
+        
+    elif node == 10:
+        t = row[3]
+        if t < 40 and t > -10:
+            D.temp_kitchen =t
+    
+    elif node == 21:
+        t = row[3]
+        if t < 40 and t > -10:
+            D.temp_bedroom =t
+   
+        
+        
     a = str(D)
-    print a
     filen = makefile(D.idx)
     with open(filen, "a") as f:
         f.write(a+"\n")
+
 
 
 

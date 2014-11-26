@@ -29,11 +29,22 @@
     <source>raw</source>
     <subplot>
       <colour>1</colour>
-      <title>Temperature (°C)</title>
+      <title>T:Outside (°C)</title>
       <ycalc>data['temp_out']</ycalc>
     </subplot>
     <subplot>
+      <colour>2</colour>
+      <title>T:Bedroom (°C)</title>
+      <ycalc>data['temp_bedroom']</ycalc>
+    </subplot>
+    <subplot>
       <colour>3</colour>
+      <title>T:Kitchen (°C)</title>
+      <ycalc>data['temp_kitchen']</ycalc>
+    </subplot>
+
+    <subplot>
+      <colour>4</colour>
       <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
       <title>Dew point (°C)</title>
     </subplot>

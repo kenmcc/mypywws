@@ -28,7 +28,9 @@
   <col align="char" char="," />
   <tr>
     <th colspan="2" rowspan="2">Date &amp; time</th>
-    <th rowspan="2">Temp</th>
+    <th rowspan="2">Bedroom</th>
+    <th rowspan="2">Kitchen</th>
+    <th rowspan="2">Outside</th>
     <th rowspan="2">Feels like</th>
     <th rowspan="2">Humidity</th>
     <th colspan="3">Wind</th>
@@ -43,11 +45,13 @@
 #timezone local#
 #roundtime True#
 #hourly#
-#jump -6#
-#loop 7#
+#jump -12#
+#loop 12#
   <tr>
     <td>#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#</td>
     <td>#idx "%H%M %Z"#</td>
+    <td>#temp_bedroom "%.1f &deg;C"#</td>
+    <td>#temp_kitchen "%.1f &deg;C"#</td>
     <td>#temp_out "%.1f &deg;C"#</td>
     <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f &deg;C"#</td>
     <td>#hum_out "%d%%"#</td>

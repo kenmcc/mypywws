@@ -231,7 +231,7 @@ class HourAcc(object):
         self.logger = logging.getLogger('pywws.Process.HourAcc')
         self.last_rain = last_rain
         self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                          'abs_pressure', 'rel_pressure']
+                          'abs_pressure', 'rel_pressure', 'temp_bedroom','temp_kitchen']
         self.reset()
 
     def reset(self):
@@ -306,7 +306,7 @@ class DayAcc(object):
         self.wind_gust = (-1.0, None)
         self.rain = 0.0
         for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
-                  'abs_pressure', 'rel_pressure'):
+                  'abs_pressure', 'rel_pressure', 'temp_bedroom', 'temp_kitchen'):
             self.ave[i] = Average()
             self.max[i] = Maximum()
             self.min[i] = Minimum()
@@ -363,7 +363,7 @@ class DayAcc(object):
         self.retval['wind_gust_t'] = self.wind_gust[1]
         self.retval['rain'] = self.rain
         for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
-                  'abs_pressure', 'rel_pressure'):
+                  'abs_pressure', 'rel_pressure', 'temp_bedroom', 'temp_kitchen'):
             self.retval['%s_ave' % i] = self.ave[i].result()
             (self.retval['%s_max' % i],
              self.retval['%s_max_t' % i]) = self.max[i].result()

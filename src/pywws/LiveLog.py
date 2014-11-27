@@ -68,13 +68,18 @@ def LiveLog(data_dir):
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
     # create a DataLogger object
-    datalogger = DataLogger(params, status, raw_data)
+    #datalogger = DataLogger(params, status, raw_data)
     # create a RegularTasks object
     asynch = eval(params.get('config', 'asynchronous', 'False'))
     tasks = Tasks.RegularTasks(params, status, raw_data, calib_data,
                                hourly_data, daily_data, monthly_data,
                                asynch=asynch)
-    # get live data
+    
+    Process.Process(params, raw_data, calib_data,
+                        hourly_data, daily_data, monthly_data)
+        # do tasks
+    tasks.do_tasks()
+    '''# get live data
     try:
         for data, logged in datalogger.live_data(
                                     logged_only=(not tasks.has_live_tasks())):
@@ -90,6 +95,7 @@ def LiveLog(data_dir):
         logger.exception(ex)
     finally:
         tasks.stop_thread()
+    '''
     return 0
 
 def main(argv=None):

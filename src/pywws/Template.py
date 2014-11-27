@@ -319,6 +319,21 @@ class Template(object):
                 idx = new_idx
                 count += 1
             return idx, count == 0
+            
+        def jumpmin(idx, count):
+            while count > 0:
+                new_idx = data_set.after(idx + SECOND)
+                if new_idx == None:
+                    break
+                idx = new_idx
+                count -= 1
+            while count < 0:
+                new_idx = data_set.before(idx)
+                if new_idx == None:
+                    break
+                idx = new_idx
+                count += 1
+            return idx, count == 0
 
         params = self.params
         if not live_data:
@@ -390,7 +405,13 @@ class Template(object):
                     # adjust time
                     if isinstance(x, datetime):
                         if round_time:
-                            x += round_time
+                            #x += round_time
+                            x = x.replace(second=0,microsecond=0)
+                            if (x.minute*60) % round_time: # if it's not already rounded
+                                x += timedelta(minutes = (round_time / 60), seconds=(round_time % 60))
+                                x -= timedelta(minutes=x.minute % 5,
+                                                        seconds=x.second,
+                                                        microseconds=x.microsecond)
                         x = x.replace(tzinfo=utc)
                         x = x.astimezone(time_zone)
                     # convert data
@@ -446,13 +467,20 @@ class Template(object):
                     use_locale = eval(command[1])
                 elif command[0] == 'roundtime':
                     if eval(command[1]):
-                        round_time = timedelta(seconds=30)
+                        round_time = 30#timedelta(seconds=30)
                     else:
                         round_time = None
                 elif command[0] == 'jump':
                     prevdata = data
                     idx, valid_data = jump(idx, int(command[1]))
                     data = data_set[idx]
+                elif command[0] == 'jumpmin':
+                    if round_time:
+                        round_time = 300 #;timedelta(seconds=60)
+                    prevdata = data
+                    idx, valid_data = jumpmin(idx, int(command[1]))
+                    data = data_set[idx]    
+                    
                 elif command[0] == 'goto':
                     prevdata = data
                     time_str = command[1]

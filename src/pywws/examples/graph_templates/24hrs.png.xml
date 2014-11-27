@@ -29,17 +29,17 @@
     <source>raw</source>
     <subplot>
       <colour>1</colour>
-      <title>T:Outside (°C)</title>
+      <title>Outside (°C)</title>
       <ycalc>data['temp_out']</ycalc>
     </subplot>
     <subplot>
       <colour>2</colour>
-      <title>T:Bedroom (°C)</title>
+      <title>Bedroom (°C)</title>
       <ycalc>data['temp_bedroom']</ycalc>
     </subplot>
     <subplot>
       <colour>3</colour>
-      <title>T:Kitchen (°C)</title>
+      <title>Kitchen (°C)</title>
       <ycalc>data['temp_kitchen']</ycalc>
     </subplot>
 

@@ -70,7 +70,15 @@ def doMain(database, datadir):
             D.idx = row[0]
             t = row[3]
             if t < 40 and t > -10:
-                D.temp_out = D.temp_in = t
+                # no sudden jumps in temp
+                if t < D.temp_out - 5:
+                    "ignoring rediculous jump of {0} in {1}".format(t - D.temp_out, node)
+                    D.temp_out = D.temp_in = D.temp_in - 1
+                elif t > D.temp_out + 5:
+                    "ignoring rediculous jump of {0} in {1}".format(t - D.temp_out, node)
+                    D.temp_out = D.temp_in = D.temp_in +1
+                else:
+                    D.temp_out = D.temp_in = t
             h = row[4]
             if h > 0 and h < 100:
                 D.hum_in = D.hum_out = int(h)
@@ -85,12 +93,26 @@ def doMain(database, datadir):
         elif node == 10:
             t = row[3]
             if t < 40 and t > -10:
-                D.temp_kitchen =t
+                if t < D.temp_kitchen - 5:
+                    print "ignoring rediculous jump of {0} in {1}".format(t - D.temp_kitchen , node)
+                    D.temp_kitchen -=1
+                elif t > D.temp_kitchen + 5:
+                    print "ignoring rediculous jump of {0} in {1}".format(t - D.temp_kitchen , node)
+                    D.temp_kitchen +=1
+                else:
+                    D.temp_kitchen =t
         
         elif node == 21:
             t = row[3]
             if t < 40 and t > -10:
-                D.temp_bedroom =t
+                if t < D.temp_bedroom - 5:
+                    "ignoring rediculous jump of {0} in {1}".format(t - D.temp_bedroom, node)
+                    D.temp_bedroom -=1
+                elif t > D.temp_bedroom + 5:
+                    "ignoring rediculous jump of {0} in {1}".format(t - D.temp_bedroom, node)
+                    D.temp_bedroom +=1
+                else:
+                    D.temp_bedroom = t
        
         if D.idx is not 0:
             a = str(D)

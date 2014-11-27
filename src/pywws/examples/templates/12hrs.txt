@@ -27,17 +27,20 @@
   <col align="char" char="." />
   <col align="char" char="," />
   <tr>
-    <th colspan="2" rowspan="2">Date &amp; time</th>
-    <th rowspan="2">Bedroom</th>
-    <th rowspan="2">Kitchen</th>
-    <th rowspan="2">Outside</th>
-    <th rowspan="2">Feels like</th>
-    <th rowspan="2">Humidity</th>
-    <th colspan="3">Wind</th>
-    <th rowspan="2">Rain</th>
+    <th colspan="1" rowspan="2">Date &amp; time</th>
+    <th colspan="5">Temperature (&deg;C)</th>
+    <th rowspan="2">Humidity (%)</th>
+    <th colspan="3">Wind (km/h)</th>
+    <th rowspan="2">Rain (mm)</th>
     <th rowspan="2">Pressure</th>
   </tr>
   <tr>
+    <th>Bedroom </th>
+    <th>Kitchen </th>
+    <th>Outside </th>
+    <th>Feels like </th>
+    <th>DP </th>
+    
     <th>dir</th>
     <th>ave</th>
     <th>gust</th>
@@ -48,17 +51,17 @@
 #jump -12#
 #loop 12#
   <tr>
-    <td>#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#</td>
-    <td>#idx "%H%M %Z"#</td>
-    <td>#temp_bedroom "%.1f &deg;C"#</td>
-    <td>#temp_kitchen "%.1f &deg;C"#</td>
-    <td>#temp_out "%.1f &deg;C"#</td>
-    <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f &deg;C"#</td>
-    <td>#hum_out "%d%%"#</td>
+    <td>#idx "%Y/%m/%d %H:%M"# </td>
+    <td>#temp_bedroom "%.1f"#</td>
+    <td>#temp_kitchen "%.1f"#</td>
+    <td>#temp_out "%.1f"#</td>
+    <td>#calc "dew_point(data['temp_out'], data['hum_out'])" "%.1f" #</td>
+    <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f"#</td>
+    <td>#hum_out "%d"#</td>
     <td>#wind_dir "%s" "-" "winddir_text(x)"#</td>
-    <td>#wind_ave "%.0f mph" "" "wind_mph(x)"#</td>
-    <td>#wind_gust "%.0f mph" "" "wind_mph(x)"#</td>
-    <td>#rain "%0.1f mm"#</td>
+    <td>#wind_ave "%.0f" "" "wind_kmph(x)"#</td>
+    <td>#wind_gust "%.0f" "" "wind_kmph(x)"#</td>
+    <td>#rain "%0.1f"#</td>
     <td>#rel_pressure "%.1f hPa"#, #pressure_trend "%s" "" "pressure_trend_text(x)"#</td>
   </tr>
 #jump 1#

@@ -543,9 +543,10 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
     if start is None:
         return start
     # set start of hour in local time (not all time offsets are integer hours)
-    start += STDOFFSET
+    start += STDOFFSET + timedelta(minutes=5)
     start = start.replace(minute=0, second=0)
     start -= STDOFFSET
+    print "START is", start
     del hourly_data[start:]
     # preload pressure history, and find last valid rain
     prev = None
@@ -595,7 +596,9 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
                     new_data['pressure_trend'] = (
                         new_data['rel_pressure'] - pressure_history[0][1])
             # store new hourly data
-            hourly_data[new_data['idx']] = new_data
+            t = new_data['idx'] + timedelta(minutes=5)
+            t = t.replace(minute=0, second=0)
+            hourly_data[t] = new_data
         hour_start = hour_end
     return start
 
@@ -715,6 +718,7 @@ def Process(params,
     start = calibrate_data(logger, params, raw_data, calib_data)
     # generate hourly data
     start = generate_hourly(logger, calib_data, hourly_data, start)
+    print "START is now", start
     # generate daily data
     start = generate_daily(logger, day_end_hour,
                            calib_data, hourly_data, daily_data, start)

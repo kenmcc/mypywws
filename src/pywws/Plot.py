@@ -652,7 +652,8 @@ class BasePlotter(object):
         # run gnuplot on file
         subprocess.check_call(['gnuplot', cmd_file])
         for file in self.tmp_files:
-            os.unlink(file)
+	     print file
+        #    os.unlink(file)
         return 0
 
 class Record(object):

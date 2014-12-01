@@ -241,6 +241,7 @@ class HourAcc(object):
         self.retval = {'idx' : None, 'temp_out' : None}
 
     def add_raw(self, data):
+        print data
         idx = data['idx']
         self.wind_fil.add(data)
         wind_gust = data['wind_gust']
@@ -716,8 +717,8 @@ def Process(params,
     # calibrate raw data
     start = calibrate_data(logger, params, raw_data, calib_data)
     # generate hourly data
+    print "HOURLY START is now", start
     start = generate_hourly(logger, calib_data, hourly_data, start)
-    print "START is now", start
     # generate daily data
     start = generate_daily(logger, day_end_hour,
                            calib_data, hourly_data, daily_data, start)

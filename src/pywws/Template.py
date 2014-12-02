@@ -401,8 +401,8 @@ class Template(object):
                         x = eval(command[1])
                         del command[1]
                     else:
-			if command[0] == "temp_bedroom" and data[command[0]] == 0:
-				print "temp_bedroom is 0"
+                        if command[0] == "temp_bedroom" and data[command[0]] == 0:
+                            print "temp_bedroom is 0"
                         x = data[command[0]]
                     # adjust time
                     if isinstance(x, datetime):

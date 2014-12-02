@@ -406,4 +406,5 @@ class RegularTasks(object):
         input_file = os.path.join(self.template_dir, template)
         output_file = os.path.join(self.work_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)
+        print "Finished Templating", output_file
         return output_file

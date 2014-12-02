@@ -23,5 +23,4 @@
 , Humidity: #hum_out "%d%%"#
 , Rain (hourly) #rain "%.1f mm"#
 , Pressure: #rel_pressure "%.0f hPa "# 
-, Wind: #wind_dir "%s," "" "winddir_text(x)"# #wind_ave "%.0f km/h (ave)," "" "wind_kmph(x)"# #wind_gust "%.0f km/h (gust)" "" "wind_kmph(x)"#
 

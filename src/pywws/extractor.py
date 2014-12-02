@@ -76,7 +76,9 @@ def doMain(database, datadir):
             t = row[3]
             if t < 40 and t > -10:
                 # no sudden jumps in temp
-                if t < D.temp_out - 5:
+		if D.temp_out == 0:
+                    D.temp_out = D.temp_in = t
+                elif t < D.temp_out - 5:
                     "ignoring rediculous jump of {0} in {1}".format(t - D.temp_out, node)
                     D.temp_out = D.temp_in = D.temp_in - 1
                 elif t > D.temp_out + 5:
@@ -98,19 +100,24 @@ def doMain(database, datadir):
         elif node == 10:
             t = row[3]
             if t < 40 and t > -10:
-                if t < D.temp_kitchen - 5:
+		if D.temp_kitchen == 0:
+                    D.temp_kitchen =t
+                elif t < D.temp_kitchen - 5:
                     print "ignoring rediculous jump of {0} in {1}".format(t - D.temp_kitchen , node)
                     D.temp_kitchen -=1
                 elif t > D.temp_kitchen + 5:
                     print "ignoring rediculous jump of {0} in {1}".format(t - D.temp_kitchen , node)
                     D.temp_kitchen +=1
                 else:
+		    print "setting temp_kitchen=", t
                     D.temp_kitchen =t
         
         elif node == 21:
             t = row[3]
             if t < 40 and t > -10:
-                if t < D.temp_bedroom - 5:
+		if D.temp_bedroom == 0:
+                    D.temp_bedroom = t
+                elif t < D.temp_bedroom - 5:
                     "ignoring rediculous jump of {0} in {1}".format(t - D.temp_bedroom, node)
                     D.temp_bedroom -=1
                 elif t > D.temp_bedroom + 5:

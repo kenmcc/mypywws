@@ -33,7 +33,8 @@ class dataminder:
         self.illuminance = 0
         for row in data:
             timestamp=  datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
-            print timestamp
+            if type(self.idx) is not datetime:
+		self.idx =  datetime.strptime(self.idx,"%Y-%m-%d %H:%M:%S")
             if timestamp > self.idx:
                 self.idx = timestamp
         
@@ -87,6 +88,7 @@ def doMain(database, datadir):
     # get the last entry in the raw data store
     raw_data = data_store(datadir)
     lastData = raw_data.last_entry()
+    print "Looking to get the latest data from around", lastData["idx"]
     lastData = getLatestDataFromDB(c, lastData["idx"])
     D = dataminder(lastData)
 

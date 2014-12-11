@@ -241,7 +241,6 @@ class HourAcc(object):
         self.retval = {'idx' : None, 'temp_out' : None}
 
     def add_raw(self, data):
-        print data
         idx = data['idx']
         self.wind_fil.add(data)
         wind_gust = data['wind_gust']
@@ -576,9 +575,9 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
                 pressure_history.append((data['idx'], data['rel_pressure']))
             if prev:
                 err = data['idx'] - prev['idx']
-                if abs(err - timedelta(minutes=data['delay'])) > TIME_ERR:
-                    logger.info('unexpected data interval %s %s',
-                                data['idx'].isoformat(' '), str(err))
+                #if abs(err - timedelta(minutes=data['delay'])) > TIME_ERR:
+                #    logger.info('unexpected data interval %s %s',
+                #                data['idx'].isoformat(' '), str(err))
             acc.add_raw(data)
             prev = data
         new_data = acc.result()
@@ -596,8 +595,11 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
                     new_data['pressure_trend'] = (
                         new_data['rel_pressure'] - pressure_history[0][1])
             # store new hourly data
-            t = new_data['idx'] + timedelta(minutes=5)
+            t = new_data['idx']# + timedelta(minutes=5)
+            # round up to the next hour
             t = t.replace(minute=0, second=0)
+            t = t +timedelta(minutes=60)
+            new_data['idx'] = t
             hourly_data[t] = new_data
         hour_start = hour_end
     return start
@@ -717,7 +719,6 @@ def Process(params,
     # calibrate raw data
     start = calibrate_data(logger, params, raw_data, calib_data)
     # generate hourly data
-    print "HOURLY START is now", start
     start = generate_hourly(logger, calib_data, hourly_data, start)
     # generate daily data
     start = generate_daily(logger, day_end_hour,

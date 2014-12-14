@@ -65,7 +65,7 @@ class dataLogger:
                 rain  = row[names.index("rain")]
                 if self.weatherdata.rain == None:
                     self.weatherdata.rain = rain
-        print self.weatherdata
+        #print self.weatherdata
 
     def updatelive(self, value_list):
         for x in value_list:
@@ -78,7 +78,8 @@ class dataLogger:
             elif x["field"] == "rain":
                 self.weatherdata.rain = x["value"]
             else:
-                print "ignoring", x["field"]
+                pass  
+                #print "ignoring", x["field"]
             
     def insert(self, value_list):
         fields = []
@@ -89,14 +90,13 @@ class dataLogger:
         insert_string =  "INSERT INTO data ({0}) VALUES({1})".format(",".join(fields), ",".join(values))
         self.c.execute(insert_string)
         self.conn.commit()
-        self.updatelive(value_list)
+        #self.updatelive(value_list)
         
         
 class fileDataLogger:
     def __init__(self, weatherdataDir):
         self.raw_data = data_store(weatherdataDir)
         self.current_data = self.raw_data.last_entry()
-        print self.current_data, "\n-------------------------------------------\n"
         
     def insert(self, value_list):
         fields = []
@@ -109,7 +109,6 @@ class fileDataLogger:
         if "node" in fields:
             nodeId = int(values[fields.index("node")])
             battery = values[fields.index("batt")]
-            
             if str(nodeId) in sensors:
                 if nodeId == 2: # temp_out, pressure, humidity
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
@@ -131,19 +130,20 @@ class fileDataLogger:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     if temp > -10 and temp < 40:
                         new_data[sensors[str(nodeId)]] = temp
-                    
             else:
                 print "Ignoring unknown node ", nodeId
-        if new_data != self.current_data:
-            justnow = datetime.now().replace(microsecond=0)
-            timedifference = (justnow - self.current_data["idx"]).seconds
-            self.current_data = new_data # store the current stuff
-            if timedifference < 48:
-                pass # this might go away - we're trying to limit the data to every 48 seconds or so as the weather station does
-            else:
-                self.current_data["idx"] = justnow
-            self.raw_data[self.current_data["idx"]] = self.current_data
-            
+        #if new_data != self.current_data:
+        justnow = datetime.now().replace(microsecond=0)
+        timedifference = (justnow - self.current_data["idx"]).seconds
+        self.current_data = new_data # store the current stuff
+        if timedifference < 48:
+            pass # this might go away - we're trying to limit the data to every 48 seconds or so as the weather station does
+        else:
+            self.current_data["idx"] = justnow
+        self.raw_data[self.current_data["idx"]] = self.current_data
+        self.raw_data.flush()
+        #else:
+        #    print "no changes"            
             
                 
          

@@ -40,7 +40,6 @@ while run == True:
                     {"field": "pressure", "value": str(float(pressure))},
                     {"field": "humidity", "value": str(float(humidity)/100)})
           logger.insert(fields)
-          print "Inserting to fileLogger too"
           fileLogger.insert(fields)
           print "Temp {0}, batt {1}, pressure {2}, humidity{3}".format(temp, batt, pressure, humidity)
 
@@ -50,7 +49,6 @@ while run == True:
                     {"field": "batt", "value": str(float(batt)/1000)}, 
                     {"field": "rain", "value": str(float(rain)/100)})
           logger.insert(fields)
-          print "Inserting to fileLogger too"
           fileLogger.insert(fields)
           print "Rain {0}, batt {1}".format(rain, batt)
 
@@ -62,7 +60,6 @@ while run == True:
                             {"field": "batt", "value": str(float(batt)/1000)}, 
                             {"field": "temp", "value": str(float(temp)/100)})
                   logger.insert(fields)
-                  print "Inserting to fileLogger too"
                   fileLogger.insert(fields)
                   jsonStr = "temp:"+str(float(temp/100.0))+",batt:"+str(float(batt/1000.0))
         elif node == 20 and len == 8: # this is a pressure sensor 
@@ -83,7 +80,6 @@ while run == True:
                       {"field": "switch", "value": str(switchstat[int(other)])})
             try:
               logger.insert(fields)
-	      print "Inserting to fileLogger too"
               fileLogger.insert(fields)
             except:
               pass

@@ -38,7 +38,7 @@ while run == True:
                     {"field": "batt", "value": str(float(batt)/1000)}, 
                     {"field": "temp", "value": str(float(temp)/1000)},
                     {"field": "pressure", "value": str(float(pressure))},
-                    {"field": "humidity", "value": str(float(humidity)/100)})
+                    {"field": "humidity", "value": str(int(humidity)/100)})
           logger.insert(fields)
           fileLogger.insert(fields)
           print "Temp {0}, batt {1}, pressure {2}, humidity{3}".format(temp, batt, pressure, humidity)

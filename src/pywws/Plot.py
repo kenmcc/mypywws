@@ -757,10 +757,12 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         # x_lo & x_hi are in local time, data is indexed in UTC
         start = self.x_lo - self.utcoffset
         stop = self.x_hi - self.utcoffset
+
         cumu_start = start
         if source == self.raw_data:
             boxwidth = 240      # assume 5 minute data interval
             start = source.before(start)
+	    interval = timedelta(minutes=5)
         elif source == self.hourly_data:
             boxwidth = 2800
             start = source.before(start)
@@ -776,9 +778,9 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         command = plot.get_value('command', None)
         if command:
             result += '%s\n' % command
-        stop = source.after(stop)
-        if stop:
-            stop = stop + timedelta(minutes=1)
+        newstop = source.after(stop)
+        if newstop:
+            stop = newstop + timedelta(minutes=1)
         # write data files
         subplots = []
         for subplot_no in range(subplot_count):

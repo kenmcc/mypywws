@@ -47,7 +47,7 @@
   </tr>
 #timezone local#
 #roundtime True#
-#raw#
+#live#
 #jumpmin -60#
 #loop 12#
   <tr>
@@ -61,7 +61,7 @@
     <td>#wind_dir "%s" "-" "winddir_text(x)"#</td>
     <td>#wind_ave "%.0f" "" "wind_kmph(x)"#</td>
     <td>#wind_gust "%.0f" "" "wind_kmph(x)"#</td>
-    <td>#rain "%0.1f"#</td>
+    <td>#calc "rain_hour(data)" "%0.1f"#</td>
     <td>#rel_pressure "%.1f hPa"#</td>
   </tr>
 #jumpmin 5#

@@ -76,7 +76,7 @@
     </subplot>
   </plot>
   <plot>
-    <source>hourly</source>
+    <source>raw</source>
     <subplot>
       <colour>2</colour>
       <ycalc>data['rel_pressure']</ycalc>

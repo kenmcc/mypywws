@@ -129,7 +129,8 @@ class fileDataLogger:
                 elif nodeId >= 10:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     if temp > -10 and temp < 40:
-                        new_data[sensors[str(nodeId)]] = temp
+			if temp >= new_data[sensors[str(nodeId)]]-2 && temp <= new_data[sensors[str(nodeId)]]+2:
+                            new_data[sensors[str(nodeId)]] = temp
             else:
                 print "Ignoring unknown node ", nodeId
         #if new_data != self.current_data:

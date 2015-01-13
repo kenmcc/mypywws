@@ -129,7 +129,7 @@ class fileDataLogger:
                 elif nodeId >= 10:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     if temp > -10 and temp < 40:
-			if temp >= new_data[sensors[str(nodeId)]]-2 && temp <= new_data[sensors[str(nodeId)]]+2:
+			if temp >= new_data[sensors[str(nodeId)]]-2 and temp <= new_data[sensors[str(nodeId)]]+2:
                             new_data[sensors[str(nodeId)]] = temp
                         else:
                             print "Rejecting large temp diff", temp, "vs", new_data[sensors[str(nodeId)]]

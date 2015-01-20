@@ -55,8 +55,8 @@
     <td>#temp_bedroom "%.1f"#</td>
     <td>#temp_kitchen "%.1f"#</td>
     <td>#temp_out "%.1f"#</td>
-    <td>#calc "dew_point(data['temp_out'], data['hum_out'])" "%.1f" #</td>
     <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f"#</td>
+    <td>#calc "dew_point(data['temp_out'], data['hum_out'])" "%.1f" #</td>
     <td>#hum_out "%d"#</td>
     <td>#wind_dir "%s" "-" "winddir_text(x)"#</td>
     <td>#wind_ave "%.0f" "" "wind_kmph(x)"#</td>

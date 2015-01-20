@@ -312,13 +312,15 @@ class RegularTasks(object):
             # time to do hourly tasks
             sections.append('hourly')
             # set 12 hourly threshold
-            threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
+            # leave threshold to the lst hour
+            #threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
             last_update = self.params.get_datetime('12 hourly', 'last update')
             if last_update:
                 self.params.unset('12 hourly', 'last update')
                 self.status.set('last update', '12 hourly', last_update.isoformat(' '))
             last_update = self.status.get_datetime('last update', '12 hourly')
-            if (not last_update) or (last_update < threshold):
+            print "12 hourly: ", last_update, threshold
+	    if (not last_update) or (last_update < threshold):
                 # time to do 12 hourly tasks
                 sections.append('12 hourly')
             # set daily threshold

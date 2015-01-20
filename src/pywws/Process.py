@@ -268,7 +268,8 @@ class HourAcc(object):
         if (data['idx'].minute < 45 or data['temp_out'] is not None or
                                 self.retval['temp_out'] is None):
             for key in self.copy_keys:
-                self.retval[key] = data[key]
+                if key in data:
+                  self.retval[key] = data[key]
 
     def result(self):
         if not self.retval['idx']:
@@ -322,6 +323,7 @@ class DayAcc(object):
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
         for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
+            #if i in data:
             temp = data[i]
             if temp is not None:
                 self.ave[i].add(temp)
@@ -332,6 +334,7 @@ class DayAcc(object):
                     # nighttime min temperature
                     self.min[i].add(temp, idx)
         for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
+          if i in data:
             value = data[i]
             if value is not None:
                 self.ave[i].add(value)
@@ -340,6 +343,7 @@ class DayAcc(object):
         if 'illuminance' in data:
             self.has_illuminance = True
             for i in ('illuminance', 'uv'):
+              if i in data:
                 value = data[i]
                 if value is not None:
                     self.ave[i].add(value)
@@ -581,7 +585,7 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
             acc.add_raw(data)
             prev = data
         new_data = acc.result()
-        if new_data and new_data['idx'].minute >= 9:
+        if new_data and new_data['idx'].minute >= 1: # was 9
             # compute pressure trend
             new_data['pressure_trend'] = None
             if new_data['rel_pressure']:
@@ -597,8 +601,9 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
             # store new hourly data
             t = new_data['idx']# + timedelta(minutes=5)
             # round up to the next hour
-            t = t.replace(minute=0, second=0)
             t = t +timedelta(minutes=60)
+            t = t.replace(minute=0, second=0)
+            print "INDEX:", t
             new_data['idx'] = t
             hourly_data[t] = new_data
         hour_start = hour_end

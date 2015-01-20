@@ -348,7 +348,8 @@ class Template(object):
         wind_dir_text = conversions._winddir_text_array
         hour_diff = self._hour_diff
         rain_hour = self._rain_hour
-        rain_day = self._rain_day
+        rain_5mins = self._rain_5mins
+	rain_day = self._rain_day
         pressure_offset = eval(self.params.get('config', 'pressure offset'))
         #fixed_block = eval(self.status.get('fixed', 'fixed block'))
         # start off with no time rounding
@@ -536,6 +537,10 @@ class Template(object):
 
     def _rain_hour(self, data):
         rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
+        return max(0.0, data['rain'] - rain_hour)
+
+    def _rain_5mins(self, data):
+        rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - timedelta(minutes=5))]['rain']
         return max(0.0, data['rain'] - rain_hour)
 
     def _rain_day(self, data):

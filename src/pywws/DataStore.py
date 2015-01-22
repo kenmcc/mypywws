@@ -85,12 +85,15 @@ def safestrptime(date_string, format=None):
     # it for the fixed format datetime strings in our csv files
     if format:
         return datetime(*(time.strptime(date_string, format)[0:6]))
-    return datetime(*map(int, (date_string[0:4],
+    try:
+      return datetime(*map(int, (date_string[0:4],
                                date_string[5:7],
                                date_string[8:10],
                                date_string[11:13],
                                date_string[14:16],
                                date_string[17:19])))
+    except Exception, e:
+	print "Failed to parse", date_string, "Exception", e
 
 class ParamStore(object):
     def __init__(self, root_dir, file_name):
@@ -453,6 +456,7 @@ class core_store(object):
                 if value == '':
                     result[key] = None
                 else:
+	            #print key, value
                     result[key] = self.conv[key](value)
             cache.data.append(result)
         csvfile.close()

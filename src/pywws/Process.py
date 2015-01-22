@@ -724,6 +724,7 @@ def Process(params,
     # calibrate raw data
     start = calibrate_data(logger, params, raw_data, calib_data)
     # generate hourly data
+    print "Generating hourly data from ", start
     start = generate_hourly(logger, calib_data, hourly_data, start)
     # generate daily data
     start = generate_daily(logger, day_end_hour,

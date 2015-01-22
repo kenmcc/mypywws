@@ -277,8 +277,10 @@ class RegularTasks(object):
         # get list of due sections
         sections = []
         for section in self.cron:
+	    print "looking for sections", section
             if self.cron[section].get_current(datetime) > local_now:
                 continue
+            print "adding ", section, " to list"
             sections.append(section)
             while self.cron[section].get_current(datetime) <= local_now:
                 self.cron[section].get_next()
@@ -302,6 +304,7 @@ class RegularTasks(object):
             now += timedelta(minutes=self.calib_data[now]['delay'])
         else:
             now = datetime.utcnow().replace(microsecond=0)
+        print "Calculating threshold from now", now, " and STDOFFSET", STDOFFSET
         threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
         last_update = self.params.get_datetime('hourly', 'last update')
         if last_update:
@@ -314,6 +317,7 @@ class RegularTasks(object):
             # set 12 hourly threshold
             # leave threshold to the lst hour
             #threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
+            threshold -= timedelta(hours= 12)
             last_update = self.params.get_datetime('12 hourly', 'last update')
             if last_update:
                 self.params.unset('12 hourly', 'last update')
@@ -350,16 +354,24 @@ class RegularTasks(object):
     def _do_uploads(self):
         # get list of pending uploads
         uploads = []
+	updated=os.path.join(self.uploads_directory, "update.txt")
         for name in os.listdir(self.uploads_directory):
             path = os.path.join(self.uploads_directory, name)
             if os.path.isfile(path):
                 uploads.append(path)
         if not uploads:
             return True
+	with open(updated, "w+") as kk:
+          t = datetime.now()
+          kk.write(t.strftime("%a %d %b %Y @ %H:%M"))
+          kk.flush()
+          kk.close()
+        uploads.append(updated)
         # upload files
         if not self.uploader.connect():
             return
         for path in uploads:
+            print "Telling uploaded to load ", path
             if self.uploader.upload_file(path):
                 os.unlink(path)
         self.uploader.disconnect()

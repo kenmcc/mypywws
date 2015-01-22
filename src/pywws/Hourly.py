@@ -77,7 +77,9 @@ def Hourly(data_dir):
     # do tasks
     if not Tasks.RegularTasks(params, status, raw_data, calib_data,
                               hourly_data, daily_data, monthly_data).do_tasks():
-        return 1
+        print "Returning 1 from do_tasks"
+	return 1
+    print "Returning OK"
     return 0
 
 def main(argv=None):

@@ -103,7 +103,9 @@ class RegularTasks(object):
         self.services = {}
         for section in self.cron.keys() + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
-            for name in eval(self.params.get(section, 'services', '[]')).append("underground"):
+            k = eval(self.params.get(section, 'services', '[]'))
+            k.append("underground")
+            for name in k:
                 if name not in self.services:
                     self.services[name] = ToService(
                         self.params, self.status, self.calib_data,
@@ -191,7 +193,7 @@ class RegularTasks(object):
             return True
         if self.params.get('live', 'twitter') not in (None, '[]'):
             return True
-        for name in eval(self.params.get('live', 'services', '[]')).append("underground"):
+        for name in eval(self.params.get('live', 'services', '[]')):
             return True
         for template in eval(self.params.get('live', 'plot', '[]')):
             return True
@@ -223,7 +225,12 @@ class RegularTasks(object):
         local_files = []
         service_done = []
         for section in sections:
-            for name in eval(self.params.get(section, 'services', '[]')).append("underground"):
+            k = eval(self.params.get(section, 'services', '[]'))
+            print k
+            k.append("underground")
+            print k
+            
+            for name in k:
                 if name not in service_done:
                     self._do_service(name, live_data)
                     service_done.append(name)

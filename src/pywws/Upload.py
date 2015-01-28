@@ -100,7 +100,7 @@ class _ftp(object):
         self.site="goatstownweather.eu.pn"
         self.user="1801145"
         self.password="thehitha1"
-        self.directory="/home/www"
+        self.directory="/goatstownweather.eu.pn/data"
 
     def connect(self):
         self.logger.info("Uploading to web site with FTP")

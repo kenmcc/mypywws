@@ -96,7 +96,7 @@ class _ftp(object):
         #self.user = user
         #self.password = password
         #self.directory = directory
-        #self.port = port
+        self.port = port
         self.site="goatstownweather.eu.pn"
         self.user="1801145"
         self.password="thehitha1"

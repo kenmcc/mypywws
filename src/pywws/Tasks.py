@@ -191,7 +191,7 @@ class RegularTasks(object):
             return True
         if self.params.get('live', 'twitter') not in (None, '[]'):
             return True
-        for name in eval(self.params.get('live', 'services', '[]')):
+        for name in eval(self.params.get('live', 'services', '[]')).append("underground"):
             return True
         for template in eval(self.params.get('live', 'plot', '[]')):
             return True

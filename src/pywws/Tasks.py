@@ -104,7 +104,9 @@ class RegularTasks(object):
         for section in self.cron.keys() + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             k = eval(self.params.get(section, 'services', '[]'))
-            k.append("underground")
+            if section == "hourly":
+                k.append("underground")
+                print "Doing underground for this bit"
             for name in k:
                 if name not in self.services:
                     self.services[name] = ToService(
@@ -226,9 +228,9 @@ class RegularTasks(object):
         service_done = []
         for section in sections:
             k = eval(self.params.get(section, 'services', '[]'))
-            print k
-            k.append("underground")
-            print k
+            if section == "hourly":
+                k.append("underground")
+                print "doing underground for this bit" 
             
             for name in k:
                 if name not in service_done:

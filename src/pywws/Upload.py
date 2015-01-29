@@ -92,15 +92,15 @@ class _ftp(object):
         global ftplib
         import ftplib
         self.logger = logger
-        #self.site = site
-        #self.user = user
-        #self.password = password
-        #self.directory = directory
+        self.site = site
+        self.user = user
+        self.password = password
+        self.directory = directory
         self.port = port
-        self.site="goatstownweather.eu.pn"
-        self.user="1801145"
-        self.password="thehitha1"
-        self.directory="/goatstownweather.eu.pn/data"
+        #self.site="goatstownweather.eu.pn"
+        #self.user="1801145"
+        #self.password="thehitha1"
+        #self.directory="/goatstownweather.eu.pn/data"
 
     def connect(self):
         self.logger.info("Uploading to web site with FTP")
@@ -124,6 +124,9 @@ class _ftp(object):
 
     def close(self):
         self.ftp.close()
+        
+    def gethost(self):
+        return self.site
 
 class _sftp(object):
     def __init__(self, logger, site, user, password, directory, port):
@@ -171,6 +174,7 @@ class Upload(object):
         self.logger = logging.getLogger('pywws.Upload')
         self.params = params
         self.old_ex = None
+        self.sites = []
         if eval(self.params.get('ftp', 'local site', 'False')):
             # copy to local directory
             directory = self.params.get(
@@ -188,14 +192,21 @@ class Upload(object):
                 port = eval(self.params.get('ftp', 'port', '22'))
                 self.uploader = _sftp(
                     self.logger, site, user, password, directory, port)
+                self.sites.append(self.uploader)
             else:
                 port = eval(self.params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(
                     self.logger, site, user, password, directory, port)
+                self.sites.append(self.uploader)
+            otherUploader = _ftp(
+                    self.logger, "goatstownweather.eu.pn", "1801145", "thehitha1", "/goatstownweather.eu.pn/data", 21)
+            self.sites.append(otherUploader)
 
     def connect(self):
         try:
-            self.uploader.connect()
+            #self.uploader.connect()
+            for x in self.sites:
+                x.connect()
         except Exception, ex:
             e = str(ex)
             if e == self.old_ex:
@@ -209,7 +220,10 @@ class Upload(object):
     def upload_file(self, file):
         target = os.path.basename(file)
         try:
-            self.uploader.put(file, target)
+            #self.uploader.put(file, target)
+            for x in self.sites:
+                print "putting ", target, " to host", x.gethost()
+                x.put(file, target)
             return True
         except Exception, ex:
             e = str(ex)
@@ -221,7 +235,9 @@ class Upload(object):
         return False
 
     def disconnect(self):
-        self.uploader.close()
+        #self.uploader.close()
+        for x in self.sites:
+            x.close()
 
     def upload(self, files):
         if not self.connect():

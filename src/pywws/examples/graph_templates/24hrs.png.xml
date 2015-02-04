@@ -56,13 +56,17 @@
       <ycalc>data['rel_pressure']</ycalc>
       <title>Pressure (hPa)</title>
     </subplot>
+    <yrange>950, 1050</yrange>
+  </plot>
+  <plot>
+    <source>raw</source>
     <subplot>
-      <colour>6</colour>
+      <colour>3</colour>
       <ycalc>data['hum_out']</ycalc>
       <title>Humidity (%)</title>
     </subplot>
-    <yrange>950, 1050</yrange>
-    <y2range>0, 100</y2range>
+    <yrange>0, 100</yrange>
+
   </plot>
   
   <plot>

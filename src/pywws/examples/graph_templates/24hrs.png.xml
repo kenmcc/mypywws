@@ -50,20 +50,21 @@
     </subplot>
   </plot>
   <plot>
-    <title>Wind speed (mph)</title>
-    <yrange>0, 30</yrange>
     <source>raw</source>
     <subplot>
-      <colour>4</colour>
-      <ycalc>wind_mph(data['wind_gust'])</ycalc>
-      <title>gust</title>
+      <colour>2</colour>
+      <ycalc>data['rel_pressure']</ycalc>
+      <title>Pressure (hPa)</title>
     </subplot>
     <subplot>
-      <colour>3</colour>
-      <ycalc>wind_mph(data['wind_ave'])</ycalc>
-      <title>average</title>
+      <colour>6</colour>
+      <ycalc>data['hum_out']</ycalc>
+      <title>Humidity (%)</title>
     </subplot>
+    <yrange>950, 1050</yrange>
+    <y2range>0, 100</y2range>
   </plot>
+  
   <plot>
     <yrange>0, 5</yrange>
     <source>hourly</source>
@@ -75,13 +76,19 @@
       <title>Hourly rainfall (mm)</title>
     </subplot>
   </plot>
-  <plot>
+<!--  <plot>
+    <title>Wind speed (kmph)</title>
+    <yrange>0, 130</yrange>
     <source>raw</source>
     <subplot>
-      <colour>2</colour>
-      <ycalc>data['rel_pressure']</ycalc>
-      <title>Pressure (hPa)</title>
+      <colour>4</colour>
+      <ycalc>wind_kmph(data['wind_gust'])</ycalc>
+      <title>gust</title>
     </subplot>
-    <yrange>960, 1050</yrange>
-  </plot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>wind_kmph(data['wind_ave'])</ycalc>
+      <title>average</title>
+    </subplot>
+  </plot> -->
 </graph>

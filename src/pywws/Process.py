@@ -517,9 +517,12 @@ def calibrate_data(logger, params, raw_data, calib_data):
     start = calib_data.before(datetime.max)
     if start is None:
         start = datetime.min
-    start = raw_data.after(start + SECOND)
-    if start is None:
+    before = raw_data.before(start)
+    start = raw_data.after(start)# + SECOND)
+    if start is None and before is None:
         return start
+    else:
+        start = before
     del calib_data[start:]
     calibrator = Calib(params, raw_data)
     count = 0
@@ -715,6 +718,7 @@ def Process(params,
     logger.info('Generating summary data')
     # get time of last record
     last_raw = raw_data.before(datetime.max)
+    print "LAST RAW is ", last_raw
     if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
     # get daytime end hour (in local time)

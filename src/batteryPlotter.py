@@ -6,7 +6,7 @@ import smtplib
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 
-con = sqlite3.connect("/tmp/data/weather.db")
+con = sqlite3.connect("/data/weather.db")
 con.isolation_level = None
 cur = con.cursor()
 

@@ -5,7 +5,7 @@ from datetime import *
 import time
 
 
-sensors = {"2": "TempPressureHumidity", "3": "RainWind", "10": "temp_kitchen", "21": "temp_bedroom"}
+sensors = {"2": "TempPressureHumidity", "3": "RainWind","9": "WH1080", "10": "temp_kitchen", "21": "temp_bedroom"}
 class weatherdata:
     def __init__(self):
         self.timestamp = None
@@ -118,14 +118,34 @@ class fileDataLogger:
                         new_data["temp_in"] = new_data["temp_out"] = temp
                     if pressure > 900 and pressure < 1100:
                         new_data["abs_pressure"] = pressure
-                    if humidity > 0 and humidity < 100:
-                        new_data["hum_in"] = new_data["hum_out"] = humidity
+                    #if humidity > 0 and humidity < 100:
+                    #    new_data["hum_in"] = new_data["hum_out"] = humidity
                         
                 elif nodeId == 3: # rain
                     rain = float(values[fields.index("rain")]) if "rain" in fields else 999
                     if rain >= 0 and rain <= 0.3:
                         new_data["rain"] = round(new_data["rain"]+rain,2)
-                        
+
+                elif nodeId == 9:
+                    humidity = int(values[fields.index("humidity")]) if "humidity" in fields else -1
+                    temp = float(values[fields.index("temp")]) if "temp" in fields else 999
+                    rain = float(values[fields.index("rain")]) if "rain" in fields else 999
+                    gust = float(values[fields.index("wind_gust")]) if "wind_gust" in fields else -1
+                    avg = float(values[fields.index("wind_avg")]) if "wind_avg" in fields else -1
+                    dir = int(values[fields.index("wind_dir")]) if "wind_dir" in fields else -1
+		    if rain >= 0 and rain <= 0.3:
+                        new_data["rain"] = round(new_data["rain"]+rain,2)
+                    if temp > -10 and temp < 40:
+                        new_data["temp_in"] = new_data["temp_out"] = temp
+                    if humidity > 0 and humidity < 100:
+                        new_data["hum_in"] = new_data["hum_out"] = humidity
+		    if gust > -1:
+                        new_data["wind_gust"] = gust
+		    if avg > -1:
+                        new_data["wind_avg"] = avg
+                    if dir > -1:
+                        new_data["wind_dir"] = dir
+                    print "Put the data into file:", temp, humidity,avg, gust,dir, rain        
                 elif nodeId >= 10:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     if temp > -10 and temp < 40:

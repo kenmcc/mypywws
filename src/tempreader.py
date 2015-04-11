@@ -52,6 +52,23 @@ while run == True:
           fileLogger.insert(fields)
           print "Rain {0}, batt {1}".format(rain, batt)
 
+        elif node == 9 and len == 16:
+          temp,batt,humidity, wind_avg, wind_gust,wind_dir, rain = struct.unpack("ihhhhhh", data[2:])
+          temp=temp/10.0
+          fields = ({"field": "node", "value": str(node)}, 
+                    {"field": "batt", "value": str(batt)}, 
+                    {"field": "humidity", "value": str(humidity)}, 
+                    {"field": "wind_avg", "value": str(wind_avg)}, 
+                    {"field": "wind_gust", "value": str(wind_gust)}, 
+                    {"field": "wind_dir", "value": str(wind_dir)}, 
+                    {"field": "temp", "value": str(temp)}, 
+                    {"field": "rain", "value": str(float(rain)/10)}
+                    )
+          print "Logging"
+	  logger.insert(fields)
+          fileLogger.insert(fields)
+          print "WH1080:", temp, batt, humidity, wind_avg, wind_gust, wind_dir, rain
+ 
         elif node >= 10 and node < 20 and len == 4:
                 temp,batt = struct.unpack("hh", data[2:])
                 if temp > -2000 and temp < 4000:

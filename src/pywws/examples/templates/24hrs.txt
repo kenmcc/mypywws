@@ -16,7 +16,7 @@
 #! along with this program; if not, write to the Free Software                     #
 #! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
 #daily#
-#timezone local#
+#timezone utc#
 #roundtime True#
 <table border="1" rules="all">
 #jump -1#
@@ -45,12 +45,12 @@
   </tr>
   <tr>
     <th class="right">Average wind speed</th>
-    <td>#wind_ave "%.0f mph" "-" "wind_mph(x)"#</td>
+    <td>#wind_ave "%.0f kmph" "-" "wind_kmph(x)"#</td>
     <td colspan="2"></td>
   </tr>
   <tr>
     <th class="right">Highest gust speed</th>
-    <td>#wind_gust "%.0f mph" "-" "wind_mph(x)"#</td>
+    <td>#wind_gust "%.0f kmph" "-" "wind_kmph(x)"#</td>
     <td>#wind_gust_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
 #idx "  <tr><th colspan=\"4\">&nbsp;</th></tr>" "" "[x, None][loop_count==1]"#

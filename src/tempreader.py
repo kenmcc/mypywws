@@ -53,6 +53,7 @@ while run == True:
           print "Rain {0}, batt {1}".format(rain, batt)
 
         elif node == 9 and len == 16:
+          print "WH1080"
           temp,batt,humidity, wind_avg, wind_gust,wind_dir, rain = struct.unpack("ihhhhhh", data[2:])
           temp=temp/10.0
           fields = ({"field": "node", "value": str(node)}, 

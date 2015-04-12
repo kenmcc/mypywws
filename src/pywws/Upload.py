@@ -197,7 +197,7 @@ class Upload(object):
                 port = eval(self.params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(
                     self.logger, site, user, password, directory, port)
-                self.sites.append(self.uploader)
+                #self.sites.append(self.uploader)
             otherUploader = _ftp(
                     self.logger, "goatstownweather.eu.pn", "1801145", "thehitha1", "/goatstownweather.eu.pn/data", 21)
             self.sites.append(otherUploader)

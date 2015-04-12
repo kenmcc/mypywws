@@ -114,8 +114,8 @@ class fileDataLogger:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     pressure = float(values[fields.index("pressure")]) if "pressure" in fields else 0
                     humidity = int(values[fields.index("humidity")]) if "humidity" in fields else -1
-                    if temp > -10 and temp < 40:
-                        new_data["temp_in"] = new_data["temp_out"] = temp
+                    #if temp > -10 and temp < 40:
+                    #    new_data["temp_in"] = new_data["temp_out"] = temp
                     if pressure > 900 and pressure < 1100:
                         new_data["abs_pressure"] = pressure
                     #if humidity > 0 and humidity < 100:
@@ -133,8 +133,8 @@ class fileDataLogger:
                     gust = float(values[fields.index("wind_gust")]) if "wind_gust" in fields else -1
                     avg = float(values[fields.index("wind_avg")]) if "wind_avg" in fields else -1
                     dir = int(values[fields.index("wind_dir")]) if "wind_dir" in fields else -1
-		    if rain >= 0 and rain <= 0.3:
-                        new_data["rain"] = round(new_data["rain"]+rain,2)
+		    #if rain >= 0 and rain <= 0.3:
+                    #    new_data["rain"] = round(new_data["rain"]+rain,2)
                     if temp > -10 and temp < 40:
                         new_data["temp_in"] = new_data["temp_out"] = temp
                     if humidity > 0 and humidity < 100:
@@ -142,10 +142,9 @@ class fileDataLogger:
 		    if gust > -1:
                         new_data["wind_gust"] = gust
 		    if avg > -1:
-                        new_data["wind_avg"] = avg
+                        new_data["wind_ave"] = avg
                     if dir > -1:
                         new_data["wind_dir"] = dir
-                    print "Put the data into file:", temp, humidity,avg, gust,dir, rain        
                 elif nodeId >= 10:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     if temp > -10 and temp < 40:

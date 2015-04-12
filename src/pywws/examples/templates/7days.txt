@@ -35,7 +35,7 @@
     <th>average</th>
     <th>max gust</th>
   </tr>
-#timezone local#
+#timezone utc#
 #roundtime True#
 #daily#
 #jump -7#

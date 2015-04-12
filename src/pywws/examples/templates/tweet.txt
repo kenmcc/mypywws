@@ -16,7 +16,7 @@
 #! along with this program; if not, write to the Free Software                     #
 #! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
 #raw#
-#timezone local#
+#timezone utc#
 #roundtime True#
 #idx "%H:%M:"# Temperature: #temp_out "%.1f°C" "-"#
 , DP: #calc "dew_point(data['temp_out'], data['hum_out'])" "%.1f°C" #

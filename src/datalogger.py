@@ -114,12 +114,12 @@ class fileDataLogger:
                     temp = float(values[fields.index("temp")]) if "temp" in fields else 999
                     pressure = float(values[fields.index("pressure")]) if "pressure" in fields else 0
                     humidity = int(values[fields.index("humidity")]) if "humidity" in fields else -1
-                    #if temp > -10 and temp < 40:
-                    #    new_data["temp_in"] = new_data["temp_out"] = temp
+                    if temp > -10 and temp < 40:
+                        new_data["temp_in"] = new_data["temp_out"] = temp
                     if pressure > 900 and pressure < 1100:
                         new_data["abs_pressure"] = pressure
-                    #if humidity > 0 and humidity < 100:
-                    #    new_data["hum_in"] = new_data["hum_out"] = humidity
+                    if humidity > 0 and humidity < 100:
+                        new_data["hum_in"] = new_data["hum_out"] = humidity
                         
                 elif nodeId == 3: # rain
                     rain = float(values[fields.index("rain")]) if "rain" in fields else 999

@@ -85,7 +85,7 @@ while run == True:
                     )
 	  logger.insert(fields)
           fileLogger.insert(fields)
-          dbgPrint("WH1080:", temp, batt, humidity, wind_avg, wind_gust, wind_dir, rain)
+          dbgPrint("WH1080: {0} {1} {2} {3} {4} {5} {6}".format(temp, batt, humidity, wind_avg, wind_gust, wind_dir, rain))
  
         elif node >= 10 and node < 20 and len == 4:
                 temp,batt = struct.unpack("hh", data[2:])

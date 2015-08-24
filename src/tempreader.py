@@ -12,14 +12,26 @@ from logging.handlers import TimedRotatingFileHandler
 log = logging.getLogger("TempReader")
 log.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(message)s')
-handler = TimedRotatingFileHandler("/data/logs/tempreader.log",
+try:
+    handler = TimedRotatingFileHandler("/data/logs/tempreader.log",
+                                       when="d",
+                                       interval=1,
+                                       backupCount=7)
+except:
+    handler = TimedRotatingFileHandler("../../data/logs/tempreader.log",
                                        when="d",
                                        interval=1,
                                        backupCount=7)
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-fd = os.open("/dev/rfm12b.0.1",  os.O_NONBLOCK|os.O_RDWR)
+try:
+    fd = os.open("/dev/rfm12b.0.1",  os.O_BLOCK|os.O_RDWR)
+    hasRFM = True
+except:
+    print "Can't open the file"
+    hasRFM = False
+    
 localURI="http://192.168.1.31/emoncms/input/post.json?apikey=d959950e0385107e37e2457db27b781e&node="
 remoteURI="http://emoncms.org/input/post.json?apikey=a6958b2d85dfdfab9406e1e786e38249&node="
 goatstownURI="http://goatstownweather.hostoi.com/emoncms/input/post.json?apikey=0f170b829035f4cde06637f953852333&node="
@@ -38,7 +50,15 @@ if len(sys.argv)== 2:
      if buf[0] == 35:
         dbgPrint("Successfully")
 
-logger = dataLogger("/data/weather.db")
+try:
+    logger = dataLogger("/data/weather.db")
+    hasDBLogger = True
+except:
+    hasDBLogger = False
+    class noLogger(object):
+        def insert(stuff):
+            pass
+    logger = noLogger()
 fileLogger = fileDataLogger("/data/weatherdata")
 
 run=True
@@ -59,7 +79,7 @@ while run == True:
                     {"field": "humidity", "value": str(int(humidity)/100)})
           logger.insert(fields)
           fileLogger.insert(fields)
-          dbgPrint("Temp {0}, batt {1}, pressure {2}, humidity{3}".format(temp, batt, pressure, humidity))
+          dbgPrint("Got node 2: Temp {0}, batt {1}, pressure {2}, humidity{3}".format(temp, batt, pressure, humidity))
 
         elif node == 3 and len == 10:
           rain,batt,a,b,c = struct.unpack("hhhhh", data[2:])
@@ -68,7 +88,7 @@ while run == True:
                     {"field": "rain", "value": str(float(rain)/100)})
           logger.insert(fields)
           fileLogger.insert(fields)
-          dbgPrint("Rain {0}, batt {1}".format(rain, batt))
+          dbgPrint("Got node 3: Rain {0}, batt {1}".format(rain, batt))
 
         elif node == 9 and len == 16:
           dbgPrint("WH1080")
@@ -83,7 +103,7 @@ while run == True:
                     {"field": "temp", "value": str(temp)}, 
                     {"field": "rain", "value": str(float(rain)/10)}
                     )
-	  logger.insert(fields)
+          logger.insert(fields)
           fileLogger.insert(fields)
           dbgPrint("WH1080: {0} {1} {2} {3} {4} {5} {6}".format(temp, batt, humidity, wind_avg, wind_gust, wind_dir, rain))
  
@@ -113,6 +133,7 @@ while run == True:
                       {"field": "batt", "value": str(float(batt)/1000)}, 
                       {"field": "temp", "value": str(float(temp)/100)},
                       {"field": "switch", "value": str(switchstat[int(other)])})
+            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, fields["switch"]))
             try:
               logger.insert(fields)
               fileLogger.insert(fields)

@@ -300,22 +300,26 @@ class RegularTasks(object):
         self._do_cron(calib_data)
 
     def do_tasks(self):
-        sections = ['logged']
+        sections = ['logged', "hourly", "12 hourly"]
         self.params.unset('logged', 'last update')
         now = self.calib_data.before(datetime.max)
         if now:
             now += timedelta(minutes=self.calib_data[now]['delay'])
         else:
             now = datetime.utcnow().replace(microsecond=0)
-        print "Calculating threshold from now", now, " and STDOFFSET", STDOFFSET
+        """print "Calculating threshold from now", now, " and STDOFFSET", STDOFFSET
         threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
         last_update = self.params.get_datetime('hourly', 'last update')
+        print "Threshold = ", threshold, "last_update = ", last_update
         if last_update:
             self.params.unset('hourly', 'last update')
             self.status.set('last update', 'hourly', last_update.isoformat(' '))
         last_update = self.status.get_datetime('last update', 'hourly')
+        if (last_update) and not (last_update < threshold):
+            print "Skipping the hourly update"
         if (not last_update) or (last_update < threshold):
             # time to do hourly tasks
+            print "Doing the hourly task"
             sections.append('hourly')
             # set 12 hourly threshold
             # leave threshold to the lst hour
@@ -326,9 +330,12 @@ class RegularTasks(object):
                 self.params.unset('12 hourly', 'last update')
                 self.status.set('last update', '12 hourly', last_update.isoformat(' '))
             last_update = self.status.get_datetime('last update', '12 hourly')
-            print "12 hourly: ", last_update, threshold
+            print "12 hourly update = {0}, threshold = {1}: ".format(last_update, threshold)
+        if (last_update) or not (last_update < threshold):
+            print "Skipping the 12 hourly update because {0} and not {1}".format(last_update, threshold)
 	    if (not last_update) or (last_update < threshold):
                 # time to do 12 hourly tasks
+                print "Doing the 12 hourly task"
                 sections.append('12 hourly')
             # set daily threshold
             threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 24)
@@ -340,6 +347,7 @@ class RegularTasks(object):
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks
                 sections.append('daily')
+                """
         self._do_common(sections)
         for section in sections:
             self.status.set('last update', section, now.isoformat(' '))
@@ -376,7 +384,10 @@ class RegularTasks(object):
         for path in uploads:
             print "Telling uploaded to load ", path
             if self.uploader.upload_file(path):
-                os.unlink(path)
+                try:
+                    os.unlink(path)
+                except:
+                    pass
         self.uploader.disconnect()
 
     def _do_service(self, name, live_data):

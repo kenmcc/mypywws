@@ -553,7 +553,8 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
     start += STDOFFSET + timedelta(minutes=5)
     start = start.replace(minute=0, second=0)
     start -= STDOFFSET
-    del hourly_data[start:]
+    #del hourly_data[start:]
+    
     # preload pressure history, and find last valid rain
     prev = None
     pressure_history = deque()

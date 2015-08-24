@@ -54,7 +54,11 @@ tweepy = None
 try:
     import twitter
 except ImportError:
-    import tweepy
+    try:
+        import tweepy
+    except:
+        print "Not doing any twittering"
+        pass
 
 from .constants import Twitter as pct
 from . import DataStore
@@ -93,6 +97,10 @@ class PythonTwitterHandler(object):
             self.api.PostMedia(status[:117], media, **self.kwargs)
         else:
             self.api.PostUpdate(status[:140], **self.kwargs)
+            
+class noApi(object):
+    def post(self, status, media):
+        pass
 
 class ToTwitter(object):
     def __init__(self, params):
@@ -110,8 +118,10 @@ class ToTwitter(object):
         # open API
         if twitter:
             self.api = PythonTwitterHandler(key, secret, latitude, longitude)
-        else:
+        elif tweepy:
             self.api = TweepyHandler(key, secret, latitude, longitude)
+        else:
+            self.api = noApi()
 
     def Upload(self, tweet):
         if not tweet:

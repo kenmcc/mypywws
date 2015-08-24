@@ -160,6 +160,7 @@ class _copy(object):
 
     def connect(self):
         self.logger.info("Copying to local directory")
+        print("Copying to local directory")
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory)
 
@@ -220,13 +221,14 @@ class Upload(object):
     def upload_file(self, file):
         target = os.path.basename(file)
         try:
-            #self.uploader.put(file, target)
+            self.uploader.put(file, target)
             for x in self.sites:
                 print "putting ", target, " to host", x.gethost()
                 x.put(file, target)
             return True
         except Exception, ex:
             e = str(ex)
+            print e
             if e == self.old_ex:
                 self.logger.debug(e)
             else:

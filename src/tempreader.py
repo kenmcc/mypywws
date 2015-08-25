@@ -17,7 +17,8 @@ try:
                                        when="d",
                                        interval=1,
                                        backupCount=7)
-except:
+except Exception, e:
+    print str(e)
     handler = TimedRotatingFileHandler("../../data/logs/tempreader.log",
                                        when="d",
                                        interval=1,
@@ -26,10 +27,11 @@ handler.setFormatter(formatter)
 log.addHandler(handler)
 
 try:
-    fd = os.open("/dev/rfm12b.0.1",  os.O_BLOCK|os.O_RDWR)
+    fd = os.open("/dev/rfm12b.0.1",  os.O_NONBLOCK|os.O_RDWR)
     hasRFM = True
-except:
-    print "Can't open the file"
+except Exception, e:
+   
+    print "Can't open the file", str(e)
     hasRFM = False
     
 localURI="http://192.168.1.31/emoncms/input/post.json?apikey=d959950e0385107e37e2457db27b781e&node="
@@ -133,7 +135,7 @@ while run == True:
                       {"field": "batt", "value": str(float(batt)/1000)}, 
                       {"field": "temp", "value": str(float(temp)/100)},
                       {"field": "switch", "value": str(switchstat[int(other)])})
-            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, fields["switch"]))
+            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, str(switchstat[int(other)])))
             try:
               logger.insert(fields)
               fileLogger.insert(fields)

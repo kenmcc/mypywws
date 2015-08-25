@@ -221,7 +221,7 @@ class Upload(object):
     def upload_file(self, file):
         target = os.path.basename(file)
         try:
-            self.uploader.put(file, target)
+            #self.uploader.put(file, target)
             for x in self.sites:
                 print "putting ", target, " to host", x.gethost()
                 x.put(file, target)

@@ -537,7 +537,8 @@ class Template(object):
 
     def _rain_hour(self, data):
         rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
-        return max(0.0, data['rain'] - rain_hour)
+        #return max(0.0, data['rain'] - rain_hour)
+        return max(0.0, data['rain'])
 
     def _rain_5mins(self, data):
         rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - timedelta(minutes=5))]['rain']

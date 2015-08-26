@@ -45,7 +45,7 @@
     <th>ave</th>
     <th>gust</th>
   </tr>
-#timezone local#
+#timezone utc#
 #roundtime True#
 #hourly#
 #jump -12#

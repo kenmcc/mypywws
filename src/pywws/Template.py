@@ -305,6 +305,7 @@ class Template(object):
         self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
 
     def process(self, live_data, template_file):
+        print template_file
         def jump(idx, count):
             while count > 0:
                 new_idx = data_set.after(idx + SECOND)
@@ -417,6 +418,7 @@ class Template(object):
                                                         microseconds=x.microsecond)
                         x = x.replace(tzinfo=utc)
                         x = x.astimezone(time_zone)
+                        
                     # convert data
                     if x != None and len(command) > 3:
                         x = eval(command[3])

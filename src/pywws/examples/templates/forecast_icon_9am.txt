@@ -1,5 +1,5 @@
 #hourly#
-#timezone local#
+#timezone utc#
 #jump -1#
 #calc "ZambrettiCode(params, data)" "<p><img src=\"images/forecast/%s.png\" title=\"Actual forecast\" alt=\"Icon not available\" /></p>"#
 #calc "Zambretti(params, data)" "<p> %s.<br />"#

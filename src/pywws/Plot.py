@@ -463,7 +463,7 @@ from .conversions import *
 from . import DataStore
 from . import Localisation
 from .Logger import ApplicationLogger
-from .TimeZone import Local
+from .TimeZone import Local, utc
 
 class GraphNode(object):
     def __init__(self, node):
@@ -520,7 +520,9 @@ class BasePlotter(object):
         result = self.hourly_data.before(datetime.max)
         if not result:
             result = datetime.utcnow()    # only if no hourly data
-        result += Local.utcoffset(result)
+        #result += Local.utcoffset(result)
+        result += utc.utcoffset(result)
+        
         # set to start of the day
         result = result.replace(hour=0, minute=0, second=0, microsecond=0)
         # apply time string
@@ -562,12 +564,14 @@ class BasePlotter(object):
             self.x_hi = self.hourly_data.before(datetime.max)
             if not self.x_hi:
                 self.x_hi = datetime.utcnow()    # only if no hourly data
-            self.x_hi += Local.utcoffset(self.x_hi)
+            #self.x_hi += Local.utcoffset(self.x_hi)
+            self.x_hi += utc.utcoffset(self.x_hi)
             # set end of graph to start of the next hour after last item
             self.x_hi += timedelta(minutes=55)
             self.x_hi = self.x_hi.replace(minute=0, second=0)
             self.x_lo = self.x_hi - self.duration
-        self.utcoffset = Local.utcoffset(self.x_hi)
+        #self.utcoffset = Local.utcoffset(self.x_hi)
+        self.utcoffset = utc.utcoffset(self.x_hi)
         # open gnuplot command file
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
@@ -713,14 +717,18 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             xlabel = self.graph.get_value('xlabel', xlabel)
             if sys.version_info[0] < 3:
                 xlabel = xlabel.encode(self.encoding)
+            #result += 'set xlabel "%s"\n' % (
+            #    self.x_hi.replace(tzinfo=Local).strftime(xlabel))
             result += 'set xlabel "%s"\n' % (
-                self.x_hi.replace(tzinfo=Local).strftime(xlabel))
+                self.x_hi.replace(tzinfo=utc).strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.graph.get_value('dateformat', dateformat)
             if sys.version_info[0] < 3:
                 dateformat = dateformat.encode(self.encoding)
-            ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
-            rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
+            #ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
+            #rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
+            ldat = self.x_lo.replace(tzinfo=utc).strftime(dateformat)
+            rdat = self.x_hi.replace(tzinfo=utc).strftime(dateformat)
             if ldat:
                 result += 'set label "%s" at "%s", graph -0.3 left\n' % (
                     ldat, self.x_lo.isoformat())

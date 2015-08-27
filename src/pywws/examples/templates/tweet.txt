@@ -18,8 +18,8 @@
 #raw#
 #timezone utc#
 #roundtime True#
-#idx "%H:%M:"# Temperature: #temp_out "%.1f°C" "-"#
-, DP: #calc "dew_point(data['temp_out'], data['hum_out'])" "%.1f°C" #
+#idx "%H:%M:"# Temperature: #temp_out "%.1f&degC" "-"#
+, DP: #calc "dew_point(data['temp_out'], data['hum_out'])" "%.1f&degC" #
 , Humidity: #hum_out "%d%%"#
 , Rain (hourly) #calc "rain_hour_twitter(data)" "%.1f mm"#
 , Pressure: #rel_pressure "%.0f hPa "# 

@@ -57,7 +57,7 @@ except ImportError:
     try:
         import tweepy
     except:
-        print "Not doing any twittering"
+        print "Not actually doing any twittering"
         pass
 
 from .constants import Twitter as pct

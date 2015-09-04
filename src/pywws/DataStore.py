@@ -515,7 +515,7 @@ class data_store(core_store):
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
-        'status', 'illuminance', 'uv', "temp_bedroom", "temp_kitchen"
+        'status', 'illuminance', 'uv', "temp_bedroom", "temp_kitchen", "temp_bed2",
         ]
     conv = {
         'idx'          : safestrptime,
@@ -534,6 +534,7 @@ class data_store(core_store):
         'uv'           : int,
         'temp_bedroom' : float,
         'temp_kitchen' : float,
+        'temp_bed2'    : float,
         }
 
 class calib_store(core_store):
@@ -544,7 +545,7 @@ class calib_store(core_store):
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
-        'rain', 'status', 'illuminance', 'uv',"temp_bedroom", "temp_kitchen"
+        'rain', 'status', 'illuminance', 'uv',"temp_bedroom", "temp_kitchen", "temp_bed2",
         ]
     conv = {
         'idx'          : safestrptime,
@@ -564,6 +565,7 @@ class calib_store(core_store):
         'uv'           : int,
         'temp_bedroom' : float,
         'temp_kitchen' : float,
+        "temp_bed2":     float,
         }
 
 class hourly_store(core_store):
@@ -574,7 +576,7 @@ class hourly_store(core_store):
     key_list = [
         'idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'pressure_trend',
-        'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'illuminance', 'uv',"temp_bedroom", "temp_kitchen"
+        'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'illuminance', 'uv',"temp_bedroom", "temp_kitchen","temp_bed2",
         ]
     conv = {
         'idx'               : safestrptime,
@@ -593,6 +595,7 @@ class hourly_store(core_store):
         'uv'                : int,
         'temp_bedroom' : float,
         'temp_kitchen' : float,
+        'temp_bed2' : float,
         }
 
 class daily_store(core_store):
@@ -624,6 +627,8 @@ class daily_store(core_store):
         'temp_bedroom_min', 'temp_bedroom_min_t', 'temp_bedroom_max', 'temp_bedroom_max_t',
         'temp_kitchen_ave',
         'temp_kitchen_min', 'temp_kitchen_min_t', 'temp_kitchen_max', 'temp_kitchen_max_t',
+        'temp_bed2_ave',
+        'temp_bed2_min', 'temp_bed2_min_t', 'temp_bed2_max', 'temp_bed2_max_t',
         ]
     conv = {
         'idx'                : safestrptime,
@@ -679,6 +684,11 @@ class daily_store(core_store):
         'temp_kitchen_min_t'     : safestrptime,
         'temp_kitchen_max'       : float,
         'temp_kitchen_max_t'     : safestrptime,
+        'temp_bed2_ave'       : float,
+        'temp_bed2_min'       : float,
+        'temp_bed2_min_t'     : safestrptime,
+        'temp_bed2_max'       : float,
+        'temp_bed2_max_t'     : safestrptime,
         }
 
     def _get_cache_path(self, target_date):
@@ -740,6 +750,11 @@ class monthly_store(core_store):
         'temp_kitchen_min_hi', 'temp_kitchen_min_hi_t', 'temp_kitchen_min_ave',
         'temp_kitchen_max_lo', 'temp_kitchen_max_lo_t',
         'temp_kitchen_max_hi', 'temp_kitchen_max_hi_t', 'temp_kitchen_max_ave',
+        'temp_bed2_ave',
+        'temp_bed2_min_lo', 'temp_bed2_min_lo_t',
+        'temp_bed2_min_hi', 'temp_bed2_min_hi_t', 'temp_bed2_min_ave',
+        'temp_bed2_max_lo', 'temp_bed2_max_lo_t',
+        'temp_bed2_max_hi', 'temp_bed2_max_hi_t', 'temp_bed2_max_ave',
         ]
     conv = {
         'idx'                  : safestrptime,
@@ -826,6 +841,17 @@ class monthly_store(core_store):
         'temp_kitchen_max_hi'      : float,
         'temp_kitchen_max_hi_t'    : safestrptime,
         'temp_kitchen_max_ave'     : float,
+        'temp_bed2_ave'         : float,
+        'temp_bed2_min_lo'      : float,
+        'temp_bed2_min_lo_t'    : safestrptime,
+        'temp_bed2_min_hi'      : float,
+        'temp_bed2_min_hi_t'    : safestrptime,
+        'temp_bed2_min_ave'     : float,
+        'temp_bed2_max_lo'      : float,
+        'temp_bed2_max_lo_t'    : safestrptime,
+        'temp_bed2_max_hi'      : float,
+        'temp_bed2_max_hi_t'    : safestrptime,
+        'temp_bed2_max_ave'     : float,
         }
 
     def _get_cache_path(self, target_date):

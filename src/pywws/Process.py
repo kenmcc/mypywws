@@ -231,7 +231,7 @@ class HourAcc(object):
         self.logger = logging.getLogger('pywws.Process.HourAcc')
         self.last_rain = last_rain
         self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                          'abs_pressure', 'rel_pressure', 'temp_bedroom','temp_kitchen']
+                          'abs_pressure', 'rel_pressure', 'temp_bedroom','temp_kitchen', "temp_bed2"]
         self.reset()
 
     def reset(self):
@@ -307,7 +307,7 @@ class DayAcc(object):
         self.wind_gust = (-1.0, None)
         self.rain = 0.0
         for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
-                  'abs_pressure', 'rel_pressure', 'temp_bedroom', 'temp_kitchen'):
+                  'abs_pressure', 'rel_pressure', 'temp_bedroom', 'temp_kitchen', "temp_bed2"):
             self.ave[i] = Average()
             self.max[i] = Maximum()
             self.min[i] = Minimum()
@@ -322,9 +322,12 @@ class DayAcc(object):
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
-        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen', "temp_bed2"):
             #if i in data:
-            temp = data[i]
+            try:
+                temp = data[i]
+            except:
+                temp = 0
             if temp is not None:
                 self.ave[i].add(temp)
                 if local_hour >= 9 and local_hour < 21:
@@ -367,7 +370,7 @@ class DayAcc(object):
         self.retval['wind_gust_t'] = self.wind_gust[1]
         self.retval['rain'] = self.rain
         for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
-                  'abs_pressure', 'rel_pressure', 'temp_bedroom', 'temp_kitchen'):
+                  'abs_pressure', 'rel_pressure', 'temp_bedroom', 'temp_kitchen', "temp_bed2"):
             self.retval['%s_ave' % i] = self.ave[i].result()
             (self.retval['%s_max' % i],
              self.retval['%s_max_t' % i]) = self.max[i].result()
@@ -401,7 +404,7 @@ class MonthAcc(object):
         self.reset()
 
     def reset(self):
-        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen', "temp_bed2"):
             self.ave[i] = Average()
             self.min_lo[i] = Minimum()
             self.min_hi[i] = Maximum()
@@ -426,19 +429,40 @@ class MonthAcc(object):
 
     def add_daily(self, data):
         self.idx = data['idx']
-        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
-            temp = data['%s_ave' % i]
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen', "temp_bed2"):
+            try:
+                temp = data['%s_ave' % i]
+            except:
+                temp = 0
             if temp is not None:
                 self.ave[i].add(temp)
-            temp = data['%s_min' % i]
+            try:
+                temp = data['%s_min' % i]
+            except:
+                temp = 0
             if temp is not None:
-                self.min_lo[i].add(temp, data['%s_min_t' % i])
-                self.min_hi[i].add(temp, data['%s_min_t' % i])
+                try:
+                    self.min_lo[i].add(temp, data['%s_min_t' % i])
+                except:
+                    self.min_lo[i].add(temp, 0)
+                try:
+                    self.min_hi[i].add(temp, data['%s_min_t' % i])
+                except:
+                    self.min_hi[i].add(temp, 0)
                 self.min_ave[i].add(temp)
-            temp = data['%s_max' % i]
+            try:
+                temp = data['%s_max' % i]
+            except:
+                temp = 0
             if temp is not None:
-                self.max_lo[i].add(temp, data['%s_max_t' % i])
-                self.max_hi[i].add(temp, data['%s_max_t' % i])
+                try:
+                    self.max_lo[i].add(temp, data['%s_max_t' % i])
+                except:
+                    self.max_lo[i].add(temp, 0)
+                try:
+                    self.max_hi[i].add(temp, data['%s_max_t' % i])
+                except:
+                    self.max_hi[i].add(temp, 0)
                 self.max_ave[i].add(temp)
         for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
             value = data['%s_ave' % i]
@@ -477,7 +501,7 @@ class MonthAcc(object):
         result['idx'] = self.idx
         result['rain'] = self.rain
         result['rain_days'] = self.rain_days
-        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen'):
+        for i in ('temp_in', 'temp_out', 'temp_bedroom', 'temp_kitchen', "temp_bed2"):
             result['%s_ave' % i] = self.ave[i].result()
             result['%s_min_ave' % i] = self.min_ave[i].result()
             (result['%s_min_lo' % i],

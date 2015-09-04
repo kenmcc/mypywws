@@ -828,7 +828,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                         value = 0.0
                     else:
                         last_ycalc = subplot.last_ycalcs
-                        value = eval(subplot.ycalc)
+                        try:
+                            value = eval(subplot.ycalc)
+                        except:
+                            pass
                     subplot.dat.write('%s %g\n' % (idx.isoformat(), value))
                     subplot.last_ycalcs = value
                 except TypeError:

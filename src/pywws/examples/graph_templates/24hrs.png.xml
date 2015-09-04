@@ -42,12 +42,18 @@
       <title>Kitchen (°C)</title>
       <ycalc>data['temp_kitchen']</ycalc>
     </subplot>
+    <subplot>
+      <colour>5</colour>
+      <ycalc>data['temp_bed2']</ycalc>
+      <title>Bedroom 2 (°C)</title>
+    </subplot>
 
     <subplot>
       <colour>4</colour>
       <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
       <title>Dew point (°C)</title>
     </subplot>
+    
   </plot>
   <plot>
     <source>raw</source>

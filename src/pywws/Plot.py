@@ -831,7 +831,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                         try:
                             value = eval(subplot.ycalc)
                         except:
-                            pass
+                            value = 0
                     subplot.dat.write('%s %g\n' % (idx.isoformat(), value))
                     subplot.last_ycalcs = value
                 except TypeError:

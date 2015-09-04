@@ -28,7 +28,7 @@
   <col align="char" char="," />
   <tr>
     <th colspan="1" rowspan="2">Date &amp; time</th>
-    <th colspan="5">Temperature (&deg;C)</th>
+    <th colspan="6">Temperature (&deg;C)</th>
     <th rowspan="2">Humidity (%)</th>
     <th colspan="3">Wind (km/h)</th>
     <th rowspan="2">Rain (mm)</th>
@@ -36,6 +36,7 @@
   </tr>
   <tr>
     <th>Bedroom </th>
+    <th>Bedroom2 </th>
     <th>Kitchen </th>
     <th>Outside </th>
     <th>Feels like </th>
@@ -53,6 +54,7 @@
   <tr>
     <td>#idx "%Y/%m/%d %H:%M"# </td>
     <td>#temp_bedroom "%.1f"#</td>
+    <td>#temp_bed2 "%.1f"#</td>
     <td>#temp_kitchen "%.1f"#</td>
     <td>#temp_out "%.1f"#</td>
     <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f"#</td>

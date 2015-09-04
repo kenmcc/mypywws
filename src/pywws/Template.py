@@ -394,7 +394,7 @@ class Template(object):
                 if command == []:
                     # empty command == print a single '#'
                     yield '#'
-                elif command[0] in data.keys() + ['calc']:
+                elif command[0] in data.keys() + ['calc', "temp_bed2"] :
                     # output a value
                     if not valid_data:
                         continue
@@ -404,8 +404,12 @@ class Template(object):
                         x = eval(command[1])
                         del command[1]
                     else:
-                        if command[0] == "temp_bedroom" and data[command[0]] == 0:
-                            print "temp_bedroom is 0"
+                        if command[0] in ["temp_bedroom", "temp_bed2"]:
+                            if command[0] in data:
+                                if data[command[0]] == 0:
+                                    print "temp_bedroom is 0"
+                            else:
+                                data[command[0]] = 0
                         x = data[command[0]]
                     # adjust time
                     if isinstance(x, datetime):

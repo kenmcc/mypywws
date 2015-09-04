@@ -60,19 +60,16 @@
     <td>#temp_bedroom_min "%.1f &deg;C"#</td>
     <td>#temp_bedroom_min_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
-
-#!<tr>
-#!  <th class="right">Daytime max temp (Bedroom 2)</th>
-#!  <td>#temp_bed2_max "%.1f &deg;C"#</td>
-#!  <td>#temp_bed2_max_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
-#!</tr>
-#!<tr>
-#!  <th class="right">Night min temp (Bedroom 2)</th>
-#!  <td>#temp_bed2_min "%.1f &deg;C"#</td>
-#!  <td>#temp_bed2_min_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
-#!</tr>
-  
-  
+#! <tr>
+#!   <th class="right">Daytime max temp (Bedroom 2)</th>
+#!   <td>#temp_bed2_max "%.1f &deg;C"#</td>
+#!   <td>#temp_bed2_max_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
+#! </tr>
+#! <tr>
+#!   <th class="right">Night min temp (Bedroom 2)</th>
+#!   <td>#temp_bed2_min "%.1f &deg;C"#</td>
+#!   <td>#temp_bed2_min_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
+#! </tr>
   <tr>
     <th class="right">Total rainfall</th>
     <td>#rain "%.1f mm"#</td>

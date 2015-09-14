@@ -37,13 +37,8 @@
       <ycalc>data['temp_bedroom']</ycalc>
     </subplot>
     <subplot>
-      <colour>5</colour>
-      <title>Bedroom2 (°C)</title>
-      <ycalc>data['temp_bed2']</ycalc>
-    </subplot>
-    <subplot>
       <colour>3</colour>
-      <title>Kitchen (°C)</title>
+      <title>Bedroom2(°C)</title>
       <ycalc>data['temp_kitchen']</ycalc>
     </subplot>
 

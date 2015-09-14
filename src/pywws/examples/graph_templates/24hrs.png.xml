@@ -39,15 +39,9 @@
     </subplot>
     <subplot>
       <colour>3</colour>
-      <title>Kitchen (°C)</title>
+      <title>Bedroom 2 (°C)</title>
       <ycalc>data['temp_kitchen']</ycalc>
     </subplot>
-    <subplot>
-      <colour>5</colour>
-      <ycalc>data['temp_bed2']</ycalc>
-      <title>Bedroom 2 (°C)</title>
-    </subplot>
-
     <subplot>
       <colour>4</colour>
       <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>

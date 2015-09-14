@@ -37,7 +37,6 @@
   <tr>
     <th>Bedroom </th>
     <th>Bedroom2 </th>
-    <th>Kitchen </th>
     <th>Outside </th>
     <th>Feels like </th>
     <th>DP </th>
@@ -54,7 +53,6 @@
   <tr>
     <td>#idx "%Y/%m/%d %H:%M"# </td>
     <td>#temp_bedroom "%.1f"#</td>
-    <td>#temp_bed2 "%.1f"#</td>
     <td>#temp_kitchen "%.1f"#</td>
     <td>#temp_out "%.1f"#</td>
     <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f"#</td>

@@ -2,11 +2,13 @@ import sqlite3
 import time
 
 import smtplib
+from datetime import datetime as dt
 
+import os
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 
-con = sqlite3.connect("/data/weather.db")
+con = sqlite3.connect("weather.db")
 con.isolation_level = None
 cur = con.cursor()
 
@@ -16,6 +18,10 @@ THRESHOLD=float(2.75)
 
 nodes = []
 success = False
+
+pathroot = "/tmp" if not os.path.exists("/ramtemp") else "/ramtemp"
+print pathroot
+
 
 def lowBatteryAlert(node, val):
     msg = MIMEText("NODE {0} has a low battery, value {1}".format(NODENAMES[str(node)]+"("+str(node)+")" if str(x) in NODENAMES else node, val))
@@ -42,10 +48,13 @@ while not success:
 for x in d:
     nodes.append(x[0])
     
+lastStoredVal = None    
 for x in nodes:
-   with open("/ramtemp/battery_{0}.txt".format(x), "a+") as f:
-   #with open("/tmp/battery_{0}.txt".format(x), "a+") as f:
+   lastStoredVal = None
+   with open(pathroot+"/battery_{0}.txt".format(x), "w+") as f:
+       f.seek(0,0)
        existingData = f.readlines()
+       
        dateQualifier = ""
        lastDate = ""
        lastVal = ""
@@ -54,8 +63,9 @@ for x in nodes:
            lastVal = existingData[-1:][0].split("\t")[1]
            dateQualifier = " and date > '{0}' ".format(lastDate)
     
-       statement = "select t.date, t.batt from data t join(select max(tt.date) 'maxtimestamp' from data tt where node={0} {1} group by date(tt.date)) m on m.maxtimestamp = t.date".format(x, dateQualifier)
-       #print statement
+       #statement = "select t.date, t.batt from data t join(select max(tt.date) 'maxtimestamp' from data tt where node={0} {1} group by date(tt.date)) m on m.maxtimestamp = t.date".format(x, dateQualifier)
+       statement = "select t.date, t.batt from data t where node={0}".format(x)
+       print statement
        success = False
        while not success:
           try:
@@ -68,29 +78,33 @@ for x in nodes:
             
        val = ""     
        for y in d:
-           date = y[0].split(" ")[0]
+           date = y[0].split(":")[0]
+           d_t = dt.strptime(date, "%Y-%m-%d %H")
+           
            val = str(y[1])
            if date > lastDate:
-               f.write("{0}\t{1}\n".format(date, val))
+               if d_t != lastStoredVal:
+                  print "Storing cos ", d_t, lastStoredVal
+                  lastStoredVal = d_t   
+                  f.write("{0}\t{1}\n".format(dt.strftime(d_t, "%Y-%m-%d_%H"), val))
        # if the value now is less than the threshold, and the one from 'yesterday' isn't let's send an email
        if float(val) <= THRESHOLD  and float(lastVal) > THRESHOLD:
            lowBatteryAlert(x, val)
         
         
-with open("/ramtemp/plotter.sh", "w") as f:
-#with open("/tmp/plotter.sh", "w") as f:
+#with open("/ramtemp/plotter.sh", "w") as f:
+with open(pathroot+"/plotter.sh", "w") as f:
     f.write("set term png\n")
-    f.write("set output '/ramtemp/battery_levels.png'\n")
-    #f.write("set output '/tmp/battery_levels.png'\n")
+    f.write("set output '{0}/battery_levels.png'\n".format(pathroot))
     f.write("set xdata time\n")
-    f.write("set timefmt '%Y-%m-%d'\n")
-    f.write("set format x '%d/%m'\n")
+    f.write("set timefmt '%Y-%m-%d_%H'\n")
+    f.write('set format x "%d/%m"\n')
     f.write("set yrange [2.5:5]\n")
     plots = []
     plotnum = 1
     for x in nodes:
-        plots.append('"/ramtemp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
-        #plots.append('"/tmp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
+        #plots.append('"/ramtemp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
+        plots.append('"/tmp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
         plotnum += 1
     f.write("plot " + ",".join(plots) + "\n")
     

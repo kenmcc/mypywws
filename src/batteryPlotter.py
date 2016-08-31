@@ -84,7 +84,6 @@ for x in nodes:
            val = str(y[1])
            if date > lastDate:
                if d_t != lastStoredVal:
-                  print "Storing cos ", d_t, lastStoredVal
                   lastStoredVal = d_t   
                   f.write("{0}\t{1}\n".format(dt.strftime(d_t, "%Y-%m-%d_%H"), val))
        # if the value now is less than the threshold, and the one from 'yesterday' isn't let's send an email
@@ -104,7 +103,7 @@ with open(pathroot+"/plotter.sh", "w") as f:
     plotnum = 1
     for x in nodes:
         #plots.append('"/ramtemp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
-        plots.append('"/tmp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
+        plots.append('"{3}/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x, pathroot))
         plotnum += 1
     f.write("plot " + ",".join(plots) + "\n")
     

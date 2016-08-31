@@ -8,7 +8,7 @@ import os
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 
-con = sqlite3.connect("weather.db")
+con = sqlite3.connect("/data/weather.db")
 con.isolation_level = None
 cur = con.cursor()
 
@@ -36,6 +36,7 @@ def lowBatteryAlert(node, val):
     s = smtplib.SMTP('localhost')
     s.sendmail(me, [you], msg.as_string())
     s.quit()
+success=True
 
 while not success:
   try:
@@ -45,9 +46,11 @@ while not success:
     print "failed to get nodes, sleeping"
     time.sleep(10)
 
-for x in d:
-    nodes.append(x[0])
-    
+#for x in d:
+#   nodes.append(x[0])
+ 
+nodes=[2,3,10,21]
+   
 lastStoredVal = None    
 for x in nodes:
    lastStoredVal = None
@@ -64,15 +67,15 @@ for x in nodes:
            dateQualifier = " and date > '{0}' ".format(lastDate)
     
        #statement = "select t.date, t.batt from data t join(select max(tt.date) 'maxtimestamp' from data tt where node={0} {1} group by date(tt.date)) m on m.maxtimestamp = t.date".format(x, dateQualifier)
-       statement = "select t.date, t.batt from data t where node={0}".format(x)
+       statement = "select date, batt from data where node={0}".format(x)
        print statement
        success = False
        while not success:
           try:
              d = cur.execute(statement)
              success = True
-          except:
-             print "failed to execute query, sleeping"
+          except Exception, e:
+             print "failed to execute query, sleeping", e
              time.sleep(10)
             
             

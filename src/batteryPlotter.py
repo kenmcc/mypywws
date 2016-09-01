@@ -24,7 +24,7 @@ success = False
 pathroot = "/tmp" if not os.path.exists("/ramtemp") else "/ramtemp"
 print pathroot
 
-maxDate=dt.datetime.now()-dt.timedelta(hours=24*7 )
+maxDate=dt.datetime.now()-dt.timedelta(hours=24*700 )
 
 def lowBatteryAlert(node, val):
     msg = MIMEText("NODE {0} has a low battery, value {1}".format(NODENAMES[str(node)]+"("+str(node)+")" if str(x) in NODENAMES else node, val))
@@ -56,7 +56,7 @@ for x in d:
    
 lastStoredVal = None    
 with open(pathroot+"/battery_summary.txt", "w+") as cf:
-  cf.write("<table><tr><td>Node</td><td>Min</td><td>Max</td><td>Current</td></tr>\n")
+  cf.write("<table border='1' rules='all'><tr><th>Node</th><th>Min</th><th>Max</th><th>Current</th></tr>\n")
   for x in nodes:
      lastStoredVal = None
    
@@ -115,7 +115,7 @@ with open(pathroot+"/battery_summary.txt", "w+") as cf:
                print "failed to execute query, sleeping", e
                time.sleep(10)
            for y in d:
-               valList.append(str(y[0]))
+               valList.append(str(y[0]) + " ({0})".format(y[1]))
        statement = "select batt, max(date) from data where node={0}".format(x)
        print statement
        success = False
@@ -128,8 +128,7 @@ with open(pathroot+"/battery_summary.txt", "w+") as cf:
            time.sleep(10)
        print d
        for y in d:
-           valList.append(str(y[0]))
-           
+           valList.append(str(y[0]) + " ({0})".format(y[1]))
        cf.write("<tr><td>{0}</td><td>{1}</td></tr>\n".format(x, "</td><td>".join(valList)))
        
   cf.write("</table>\n")

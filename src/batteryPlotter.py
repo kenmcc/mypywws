@@ -7,8 +7,10 @@ from datetime import datetime as dt
 import os
 # Import the email modules we'll need
 from email.mime.text import MIMEText
-
-con = sqlite3.connect("weather.db")
+try:
+    con = sqlite3.connect("/data/weather.db")
+except:
+    con = sqlite3.connect("weather.db")
 con.isolation_level = None
 cur = con.cursor()
 
@@ -64,7 +66,7 @@ for x in nodes:
            dateQualifier = " and date > '{0}' ".format(lastDate)
     
        #statement = "select t.date, t.batt from data t join(select max(tt.date) 'maxtimestamp' from data tt where node={0} {1} group by date(tt.date)) m on m.maxtimestamp = t.date".format(x, dateQualifier)
-       statement = "select t.date, t.batt from data t where node={0}".format(x)
+       statement = "select * from( select t.date, t.batt from data t where node={0} order by t.date desc limit 1000) order by date asc".format(x)
        print statement
        success = False
        while not success:

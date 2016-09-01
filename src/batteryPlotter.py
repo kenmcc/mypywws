@@ -38,7 +38,7 @@ def lowBatteryAlert(node, val):
     s = smtplib.SMTP('localhost')
     s.sendmail(me, [you], msg.as_string())
     s.quit()
-success=True
+success=False
 
 while not success:
   try:
@@ -48,10 +48,10 @@ while not success:
     print "failed to get nodes, sleeping"
     time.sleep(10)
 
-#for x in d:
-#   nodes.append(x[0])
+for x in d:
+   nodes.append(x[0])
  
-nodes=[2,3,10,21]
+#nodes=[2,3,10,21]
    
 lastStoredVal = None    
 for x in nodes:
@@ -92,8 +92,11 @@ for x in nodes:
                   lastStoredVal = d_t   
                   f.write("{0}\t{1}\n".format(dt.strftime(d_t, "%Y-%m-%d_%H"), val))
        # if the value now is less than the threshold, and the one from 'yesterday' isn't let's send an email
-       if float(val) <= THRESHOLD  and float(lastVal) > THRESHOLD:
-           lowBatteryAlert(x, val)
+       try:
+           if float(val) <= THRESHOLD  and float(lastVal) > THRESHOLD:
+             lowBatteryAlert(x, val)
+       except:
+           pass
         
         
 #with open("/ramtemp/plotter.sh", "w") as f:

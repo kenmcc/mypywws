@@ -38,6 +38,7 @@ def lowBatteryAlert(node, val):
     s = smtplib.SMTP('localhost')
     s.sendmail(me, [you], msg.as_string())
     s.quit()
+success=True
 
 while not success:
   try:
@@ -47,9 +48,11 @@ while not success:
     print "failed to get nodes, sleeping"
     time.sleep(10)
 
-for x in d:
-    nodes.append(x[0])
-    
+#for x in d:
+#   nodes.append(x[0])
+ 
+nodes=[2,3,10,21]
+   
 lastStoredVal = None    
 for x in nodes:
    lastStoredVal = None
@@ -73,8 +76,8 @@ for x in nodes:
           try:
              d = cur.execute(statement)
              success = True
-          except:
-             print "failed to execute query, sleeping"
+          except Exception, e:
+             print "failed to execute query, sleeping", e
              time.sleep(10)
             
             

@@ -2,7 +2,7 @@ import sqlite3
 import time
 
 import smtplib
-from datetime import datetime as dt
+import datetime as dt
 
 import os
 # Import the email modules we'll need
@@ -24,6 +24,7 @@ success = False
 pathroot = "/tmp" if not os.path.exists("/ramtemp") else "/ramtemp"
 print pathroot
 
+maxDate=dt.datetime.now()-dt.timedelta(hours=24*7 )
 
 def lowBatteryAlert(node, val):
     msg = MIMEText("NODE {0} has a low battery, value {1}".format(NODENAMES[str(node)]+"("+str(node)+")" if str(x) in NODENAMES else node, val))
@@ -69,7 +70,7 @@ for x in nodes:
            dateQualifier = " and date > '{0}' ".format(lastDate)
     
        #statement = "select t.date, t.batt from data t join(select max(tt.date) 'maxtimestamp' from data tt where node={0} {1} group by date(tt.date)) m on m.maxtimestamp = t.date".format(x, dateQualifier)
-       statement = "select * from( select t.date, t.batt from data t where node={0} order by t.date desc limit 1000) order by date asc".format(x)
+       statement = "select * from( select t.date, t.batt from data t where node={0} and date > '{1}' order by t.date desc) order by date asc".format(x,dt.datetime.strftime(maxDate, "%Y-%m-%d %H"))
        print statement
        success = False
        while not success:
@@ -84,13 +85,13 @@ for x in nodes:
        val = ""     
        for y in d:
            date = y[0].split(":")[0]
-           d_t = dt.strptime(date, "%Y-%m-%d %H")
+           d_t = dt.datetime.strptime(date, "%Y-%m-%d %H")
            
            val = str(y[1])
            if date > lastDate:
                if d_t != lastStoredVal:
                   lastStoredVal = d_t   
-                  f.write("{0}\t{1}\n".format(dt.strftime(d_t, "%Y-%m-%d_%H"), val))
+                  f.write("{0}\t{1}\n".format(dt.datetime.strftime(d_t, "%Y-%m-%d_%H"), val))
        # if the value now is less than the threshold, and the one from 'yesterday' isn't let's send an email
        try:
            if float(val) <= THRESHOLD  and float(lastVal) > THRESHOLD:

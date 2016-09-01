@@ -55,9 +55,12 @@ for x in d:
 #nodes=[2,3,10,21]
    
 lastStoredVal = None    
-for x in nodes:
-   lastStoredVal = None
-   with open(pathroot+"/battery_{0}.txt".format(x), "w+") as f:
+with open(pathroot+"/battery_summary.txt", "w+") as cf:
+  cf.write("<table><tr><td>Node</td><td>Min</td><td>Max</td><td>Current</td></tr>\n")
+  for x in nodes:
+     lastStoredVal = None
+   
+     with open(pathroot+"/battery_{0}.txt".format(x), "w+") as f:
        f.seek(0,0)
        existingData = f.readlines()
        
@@ -98,6 +101,38 @@ for x in nodes:
              lowBatteryAlert(x, val)
        except:
            pass
+       
+       valList = []
+       for val in ["min", "max"]:
+           statement = "select batt,max(date) from data where batt=(select {0}(batt) from data where node={1}) and node={1}".format(val, x)
+           print statement
+           success = False
+           while not success:
+             try:
+               d = cur.execute(statement)
+               success = True
+             except Exception, e:
+               print "failed to execute query, sleeping", e
+               time.sleep(10)
+           for y in d:
+               valList.append(str(y[0]))
+       statement = "select batt, max(date) from data where node={0}".format(x)
+       print statement
+       success = False
+       while not success:
+         try:
+           d = cur.execute(statement)
+           success = True
+         except Exception, e:
+           print "failed to execute query, sleeping", e
+           time.sleep(10)
+       print d
+       for y in d:
+           valList.append(str(y[0]))
+           
+       cf.write("<tr><td>{0}</td><td>{1}</td></tr>\n".format(x, "</td><td>".join(valList)))
+       
+  cf.write("</table>\n")
         
         
 #with open("/ramtemp/plotter.sh", "w") as f:

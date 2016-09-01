@@ -52,6 +52,7 @@ while not success:
 for x in d:
    nodes.append(x[0])
  
+nodes = sorted(nodes) 
 #nodes=[2,3,10,21]
    
 lastStoredVal = None    

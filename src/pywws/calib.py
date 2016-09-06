@@ -101,8 +101,11 @@ class DefaultCalib(object):
     def calib(self, raw):
         result = dict(raw)
         # calculate relative pressure
-        result['rel_pressure'] = result['abs_pressure'] + self.pressure_offset
-        return result
+	try:
+            result['rel_pressure'] = result['abs_pressure'] + self.pressure_offset
+            return result
+        except Exception, e:
+            print result, raw
 
 usercalib = None
 

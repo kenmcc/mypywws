@@ -64,8 +64,9 @@ except:
 fileLogger = fileDataLogger("/data/weatherdata")
 
 try:
-    battLogger = dataLogger("/data/batteries.db")
+    battLogger = battLogger("/data/batteries.db")
 except:
+    print "No battlogger"
     class noBLogger(object):
         def insert(stuff):
             pass
@@ -90,9 +91,11 @@ while run == True:
                     {"field": "humidity", "value": str(int(humidity)/100)})
           try:
               logger.insert(fields)
-              fileLogger.insert(fields)
               battLogger.insert(fields[:2])
-          except:
+              fileLogger.insert(fields)	
+
+          except Exception, e:
+              print "Exception", e
               pass
           
 
@@ -104,9 +107,7 @@ while run == True:
                     {"field": "rain", "value": str(float(rain)/100)})
           try:
               logger.insert(fields)
-              fileLogger.insert(fields)
               battLogger.insert(fields[:2])
-              
           except:
               pass
           
@@ -127,8 +128,8 @@ while run == True:
                     )
           try:
               logger.insert(fields)
-              fileLogger.insert(fields)
               battLogger.insert(fields[:2])
+              fileLogger.insert(fields)
           except:
               pass
           
@@ -142,25 +143,24 @@ while run == True:
                             {"field": "temp", "value": str(float(temp)/100)})
                   try:
                       logger.insert(fields)
-                      fileLogger.insert(fields)
                       battLogger.insert(fields[:2])
+                      fileLogger.insert(fields)
                       jsonStr = "temp:"+str(float(temp/100.0))+",batt:"+str(float(batt/1000.0))
-                  except:
+                  except Exception,e:
+                      print e
                       pass
                   
         elif node == 20 and len == 8: # this is a pressure sensor 
-          dbgPrint("pressure sensor")
           temp, batt, pressure = struct.unpack("hhi", data[2:])
           if temp >-2000 and temp < 40000 and pressure >900 and pressure < 1100:
-                 dbgPrint("Got temp {0}, battery {1}, pressure {2} ".format( temp, batt, pressure))
                  jsonStr = "temp:"+str(float(temp/10.0))
                  jsonStr += ",batt:"+str(float(batt/1000.0))
                  jsonStr += ",pressure:"+str(pressure)  
                  
         elif node == 21 and len == 5:
             temp, batt, other = struct.unpack("hhb", data[2:])
-            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, str(switchstat[int(other)])))
             switchstat = ["'OFF'", "'ON'", "'STAY'"]
+            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, str(switchstat[int(other)])))
             fields = ({"field": "node", "value": str(node)}, 
                       {"field": "batt", "value": str(float(batt)/1000)}, 
                       {"field": "temp", "value": str(float(temp)/100)},
@@ -168,10 +168,10 @@ while run == True:
             
             try:
                 logger.insert(fields)
-                fileLogger.insert(fields)
                 battLogger.insert(fields[:2])
-                
-            except:
+                fileLogger.insert(fields)    
+            except Exception,e:
+                print e
                 pass
 
         else:

@@ -120,7 +120,7 @@ class fileDataLogger:
         self.current_data = self.raw_data.last_entry()
         
     def insert(self, value_list):
-        fields = []
+	fields = []
         values = []
         for d in value_list:
            fields.append(d["field"])

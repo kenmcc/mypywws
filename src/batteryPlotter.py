@@ -24,7 +24,7 @@ success = False
 pathroot = "/tmp" if not os.path.exists("/ramtemp") else "/ramtemp"
 print pathroot
 
-maxDate=dt.datetime.now()-dt.timedelta(hours=24*700 )
+maxDate=dt.datetime.now()-dt.timedelta(hours=24*7 )
 
 def lowBatteryAlert(node, val):
     msg = MIMEText("NODE {0} has a low battery, value {1}".format(NODENAMES[str(node)]+"("+str(node)+")" if str(x) in NODENAMES else node, val))

@@ -63,6 +63,14 @@ except:
     logger = noLogger()
 fileLogger = fileDataLogger("/data/weatherdata")
 
+try:
+    battLogger = dataLogger("/data/batteries.db")
+except:
+    class noBLogger(object):
+        def insert(stuff):
+            pass
+    battLogger = noBLogger()
+
 run=True
 while run == True:
     try:
@@ -74,28 +82,40 @@ while run == True:
         #print now, node, len
         if node == 2:
           temp, batt, pressure, humidity = struct.unpack("hhii", data[2:])
+          dbgPrint("Got node 2: Temp {0}, batt {1}, pressure {2}, humidity{3}".format(temp, batt, pressure, humidity))
           fields = ({"field": "node", "value": str(node)}, 
                     {"field": "batt", "value": str(float(batt)/1000)}, 
                     {"field": "temp", "value": str(float(temp)/100)},
                     {"field": "pressure", "value": str(float(pressure))},
                     {"field": "humidity", "value": str(int(humidity)/100)})
-          logger.insert(fields)
-          fileLogger.insert(fields)
-          dbgPrint("Got node 2: Temp {0}, batt {1}, pressure {2}, humidity{3}".format(temp, batt, pressure, humidity))
+          try:
+              logger.insert(fields)
+              fileLogger.insert(fields)
+              battLogger.insert(fields[:2])
+          except:
+              pass
+          
 
         elif node == 3 and len == 10:
           rain,batt,a,b,c = struct.unpack("hhhhh", data[2:])
+          dbgPrint("Got node 3: Rain {0}, batt {1}".format(rain, batt))
           fields = ({"field": "node", "value": str(node)}, 
                     {"field": "batt", "value": str(float(batt)/1000)}, 
                     {"field": "rain", "value": str(float(rain)/100)})
-          logger.insert(fields)
-          fileLogger.insert(fields)
-          dbgPrint("Got node 3: Rain {0}, batt {1}".format(rain, batt))
+          try:
+              logger.insert(fields)
+              fileLogger.insert(fields)
+              battLogger.insert(fields[:2])
+              
+          except:
+              pass
+          
 
         elif node == 9 and len == 16:
           dbgPrint("WH1080")
           temp,batt,humidity, wind_avg, wind_gust,wind_dir, rain = struct.unpack("ihhhhhh", data[2:])
           temp=temp/10.0
+          dbgPrint("WH1080: {0} {1} {2} {3} {4} {5} {6}".format(temp, batt, humidity, wind_avg, wind_gust, wind_dir, rain))
           fields = ({"field": "node", "value": str(node)}, 
                     {"field": "batt", "value": str(batt)}, 
                     {"field": "humidity", "value": str(humidity)}, 
@@ -105,9 +125,13 @@ while run == True:
                     {"field": "temp", "value": str(temp)}, 
                     {"field": "rain", "value": str(float(rain)/10)}
                     )
-          logger.insert(fields)
-          fileLogger.insert(fields)
-          dbgPrint("WH1080: {0} {1} {2} {3} {4} {5} {6}".format(temp, batt, humidity, wind_avg, wind_gust, wind_dir, rain))
+          try:
+              logger.insert(fields)
+              fileLogger.insert(fields)
+              battLogger.insert(fields[:2])
+          except:
+              pass
+          
  
         elif node >= 10 and node < 20 and len == 4:
                 temp,batt = struct.unpack("hh", data[2:])
@@ -116,9 +140,14 @@ while run == True:
                   fields = ({"field": "node", "value": str(node)}, 
                             {"field": "batt", "value": str(float(batt)/1000)}, 
                             {"field": "temp", "value": str(float(temp)/100)})
-                  logger.insert(fields)
-                  fileLogger.insert(fields)
-                  jsonStr = "temp:"+str(float(temp/100.0))+",batt:"+str(float(batt/1000.0))
+                  try:
+                      logger.insert(fields)
+                      fileLogger.insert(fields)
+                      battLogger.insert(fields[:2])
+                      jsonStr = "temp:"+str(float(temp/100.0))+",batt:"+str(float(batt/1000.0))
+                  except:
+                      pass
+                  
         elif node == 20 and len == 8: # this is a pressure sensor 
           dbgPrint("pressure sensor")
           temp, batt, pressure = struct.unpack("hhi", data[2:])
@@ -127,20 +156,23 @@ while run == True:
                  jsonStr = "temp:"+str(float(temp/10.0))
                  jsonStr += ",batt:"+str(float(batt/1000.0))
                  jsonStr += ",pressure:"+str(pressure)  
+                 
         elif node == 21 and len == 5:
             temp, batt, other = struct.unpack("hhb", data[2:])
-            print node, temp, batt, other
+            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, str(switchstat[int(other)])))
             switchstat = ["'OFF'", "'ON'", "'STAY'"]
             fields = ({"field": "node", "value": str(node)}, 
                       {"field": "batt", "value": str(float(batt)/1000)}, 
                       {"field": "temp", "value": str(float(temp)/100)},
                       {"field": "switch", "value": str(switchstat[int(other)])})
-            dbgPrint("Got node {0}, temp {1}, batt {2} switch {3}".format(node, temp, batt, str(switchstat[int(other)])))
+            
             try:
-              logger.insert(fields)
-              fileLogger.insert(fields)
+                logger.insert(fields)
+                fileLogger.insert(fields)
+                battLogger.insert(fields[:2])
+                
             except:
-              pass
+                pass
 
         else:
           dbgPrint("don't know what to do with node {0}, len {1}".format(node, len))

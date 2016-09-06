@@ -92,6 +92,27 @@ class dataLogger:
         self.conn.commit()
         #self.updatelive(value_list)
         
+class battLogger:
+    def __init__(self, db):
+        self.liveData = {}
+        self.dbName = db
+        self.conn = sqlite3.connect(db)
+        self.c = self.conn.cursor()
+        self.c.execute('''CREATE TABLE IF NOT EXISTS data (date text DEFAULT CURRENT_TIMESTAMP, 
+                                                           node int  NOT NULL, 
+                                                           batt float NOT NULL 
+                                                           )''')
+        self.conn.commit()
+        
+    def insert(self, value_list):
+        fields = []
+        values = []
+        for d in value_list:
+           fields.append(d["field"])
+           values.append(d["value"])
+        insert_string =  "INSERT INTO data ({0}) VALUES({1})".format(",".join(fields), ",".join(values))
+        self.c.execute(insert_string)
+        self.conn.commit()
         
 class fileDataLogger:
     def __init__(self, weatherdataDir):

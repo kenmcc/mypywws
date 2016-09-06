@@ -8,9 +8,9 @@ import os
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 try:
-    con = sqlite3.connect("/data/weather.db")
+    con = sqlite3.connect("/data/batteries.db")
 except:
-    con = sqlite3.connect("weather.db")
+    con = sqlite3.connect("/tmp/batteries.db")
 con.isolation_level = None
 cur = con.cursor()
 

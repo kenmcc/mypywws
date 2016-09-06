@@ -61,7 +61,7 @@ with open(pathroot+"/battery_summary.txt", "w+") as cf:
   for x in nodes:
      lastStoredVal = None
    
-     with open(pathroot+"/battery_{0}.txt".format(x), "w+") as f:
+     with open(pathroot+"/battery_{0}.txt".format(x), "a+") as f:
        f.seek(0,0)
        existingData = f.readlines()
        

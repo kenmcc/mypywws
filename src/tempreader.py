@@ -76,7 +76,7 @@ while run == True:
           temp, batt, pressure, humidity = struct.unpack("hhii", data[2:])
           fields = ({"field": "node", "value": str(node)}, 
                     {"field": "batt", "value": str(float(batt)/1000)}, 
-                    {"field": "temp", "value": str(float(temp)/1000)},
+                    {"field": "temp", "value": str(float(temp)/100)},
                     {"field": "pressure", "value": str(float(pressure))},
                     {"field": "humidity", "value": str(int(humidity)/100)})
           logger.insert(fields)

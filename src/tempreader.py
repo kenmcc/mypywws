@@ -108,7 +108,9 @@ while run == True:
           try:
               logger.insert(fields)
               battLogger.insert(fields[:2])
-          except:
+              fileLogger.insert(fields)
+          except Exception,e:
+              print "Exception inserting rain", e
               pass
           
 

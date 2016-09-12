@@ -69,12 +69,14 @@ with open(pathroot+"/battery_summary.txt", "w+") as cf:
        lastDate = ""
        lastVal = ""
        if existingData:
+           
            lastDate = existingData[-1:][0].split("\t")[0]
            lastVal = existingData[-1:][0].split("\t")[1]
+           lastDate = lastDate.replace("_", " ")
            dateQualifier = " and date > '{0}' ".format(lastDate)
-    
+           print "found an existing date, so adding", dateQualifier
        #statement = "select t.date, t.batt from data t join(select max(tt.date) 'maxtimestamp' from data tt where node={0} {1} group by date(tt.date)) m on m.maxtimestamp = t.date".format(x, dateQualifier)
-       statement = "select * from( select t.date, t.batt from data t where node={0} and date > '{1}' order by t.date desc) order by date asc".format(x,dt.datetime.strftime(maxDate, "%Y-%m-%d %H"))
+       statement = "select * from( select t.date, t.batt from data t where node={0} and date > '{1}' order by t.date desc) order by date asc".format(x,lastDate)
        print statement
        success = False
        while not success:
@@ -88,6 +90,7 @@ with open(pathroot+"/battery_summary.txt", "w+") as cf:
             
        val = ""     
        for y in d:
+	   print y           
            date = y[0].split(":")[0]
            d_t = dt.datetime.strptime(date, "%Y-%m-%d %H")
            
@@ -127,7 +130,6 @@ with open(pathroot+"/battery_summary.txt", "w+") as cf:
          except Exception, e:
            print "failed to execute query, sleeping", e
            time.sleep(10)
-       print d
        for y in d:
            valList.append(str(y[0]) + " ({0})".format(y[1]))
        cf.write("<tr><td>{0}</td><td>{1}</td></tr>\n".format(x, "</td><td>".join(valList)))

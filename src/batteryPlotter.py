@@ -146,6 +146,7 @@ with open(pathroot+"/plotter.sh", "w") as f:
     f.write('set format x "%d/%m"\n')
     f.write("set yrange [2.5:5]\n")
     f.write("set key outside\n")
+    f.write('set key font ",9" \n')
     plots = []
     plotnum = 1
     for x in nodes:

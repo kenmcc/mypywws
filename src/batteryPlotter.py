@@ -145,6 +145,7 @@ with open(pathroot+"/plotter.sh", "w") as f:
     f.write("set timefmt '%Y-%m-%d_%H'\n")
     f.write('set format x "%d/%m"\n')
     f.write("set yrange [2.5:5]\n")
+    f.write("set key outside\n")
     plots = []
     plotnum = 1
     for x in nodes:

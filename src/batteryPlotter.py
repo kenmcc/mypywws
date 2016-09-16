@@ -15,7 +15,7 @@ con.isolation_level = None
 cur = con.cursor()
 
 
-NODENAMES = {"2":"PTH","3":"Rain","10":"Kitchen", "21":"Bedroom"}
+NODENAMES = {"2":"PTH","3":"Rain","10":"Bed(B)", "21":"Bed(F)"}
 THRESHOLD=float(2.75)
 
 nodes = []

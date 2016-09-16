@@ -151,7 +151,7 @@ with open(pathroot+"/plotter.sh", "w") as f:
     plotnum = 1
     for x in nodes:
         #plots.append('"/ramtemp/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x))
-        plots.append('"{3}/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)]+"("+str(x)+")" if str(x) in NODENAMES else x, pathroot))
+        plots.append('"{3}/battery_{0}.txt" using 1:2 title "{2}" smooth unique lc {1} lw 1'.format(x, plotnum, NODENAMES[str(x)] if str(x) in NODENAMES else x, pathroot))
         plotnum += 1
     f.write("plot " + ",".join(plots) + "\n")
     

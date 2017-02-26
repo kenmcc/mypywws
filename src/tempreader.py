@@ -56,9 +56,11 @@ try:
     logger = dataLogger("/data/weather.db")
     hasDBLogger = True
 except:
+    print "Has no db logger"
     hasDBLogger = False
     class noLogger(object):
-        def insert(stuff):
+        def insert(self, stuff):
+            print "NullLogger"
             pass
     logger = noLogger()
 fileLogger = fileDataLogger("/data/weatherdata")
@@ -90,7 +92,8 @@ while run == True:
                     {"field": "pressure", "value": str(float(pressure))},
                     {"field": "humidity", "value": str(int(humidity)/100)})
           try:
-              logger.insert(fields)
+              #print "Inserting logger", fields
+              #logger.insert(fields)
               battLogger.insert(fields[:2])
               fileLogger.insert(fields)	
 
@@ -106,7 +109,7 @@ while run == True:
                     {"field": "batt", "value": str(float(batt)/1000)}, 
                     {"field": "rain", "value": str(float(rain)/100)})
           try:
-              logger.insert(fields)
+              #logger.insert(fields)
               battLogger.insert(fields[:2])
               fileLogger.insert(fields)
           except Exception,e:
@@ -129,7 +132,7 @@ while run == True:
                     {"field": "rain", "value": str(float(rain)/10)}
                     )
           try:
-              logger.insert(fields)
+              #logger.insert(fields)
               battLogger.insert(fields[:2])
               fileLogger.insert(fields)
           except:
@@ -144,7 +147,7 @@ while run == True:
                             {"field": "batt", "value": str(float(batt)/1000)}, 
                             {"field": "temp", "value": str(float(temp)/100)})
                   try:
-                      logger.insert(fields)
+                      #logger.insert(fields)
                       battLogger.insert(fields[:2])
                       fileLogger.insert(fields)
                       jsonStr = "temp:"+str(float(temp/100.0))+",batt:"+str(float(batt/1000.0))
@@ -169,7 +172,7 @@ while run == True:
                       {"field": "switch", "value": str(switchstat[int(other)])})
             
             try:
-                logger.insert(fields)
+                #logger.insert(fields)
                 battLogger.insert(fields[:2])
                 fileLogger.insert(fields)    
             except Exception,e:
